@@ -1,9 +1,9 @@
 <?php
 
-// Parse Options ...
+define(VERSION, "1.1");
 
-$shortopts  = "i:h";
-$longopts  = array (
+$shortopts = "i:h";
+$longopts = array(
     "infile:",
     "listaliases",
     "listpolicies",
@@ -14,6 +14,9 @@ $options = getopt($shortopts, $longopts);
 // show help
 function displayHelpAndExit() {
     print "
+    
+    xmlcheck v" . VERSION . "
+    
     Usage: 
     ./xmlcheck.php args|commands
 
@@ -27,7 +30,7 @@ function displayHelpAndExit() {
     exit;
 }
 
-if (isset($options["help"]) || isset($options["h"]) || count ($options) == 0) {
+if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
     displayHelpAndExit();
 }
 if (isset($options["infile"]) || isset($options["i"])) {

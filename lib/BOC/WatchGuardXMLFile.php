@@ -1,4 +1,5 @@
 <?php
+
 namespace BOC;
 
 class WatchGuardXMLFile
@@ -7,8 +8,7 @@ class WatchGuardXMLFile
     private $xml_alias_list;
     private $xml_policy_list;
 
-    public function __construct($xmlfilename)
-    {
+    public function __construct($xmlfilename) {
         $this->xmlfile = simplexml_load_file($xmlfilename);
         $this->xml_alias_list = $this::getAliasList($this->xmlfile);
         $this->xml_policy_list = $this::getPolicyList($this->xmlfile);
@@ -17,7 +17,7 @@ class WatchGuardXMLFile
     private function getAliasList($xml) {
         foreach ($xml->children() as $child) {
 
-            $name=$child->getName();
+            $name = $child->getName();
             if ($name != "alias-list") continue;
             return $child;
         }
@@ -26,7 +26,7 @@ class WatchGuardXMLFile
     private function getPolicyList($xml) {
         foreach ($xml->children() as $child) {
 
-            $name=$child->getName();
+            $name = $child->getName();
             if ($name != "policy-list") continue;
             return $child;
         }

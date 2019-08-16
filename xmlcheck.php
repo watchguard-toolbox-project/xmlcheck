@@ -3,7 +3,7 @@
 
 use BOC\WatchGuardXMLFile;
 
-require_once (dirname(__FILE__) . '/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
 require_once("lib/functions.php");
 require_once("lib/options.php");

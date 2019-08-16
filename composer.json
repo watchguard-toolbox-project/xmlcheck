@@ -1,16 +1,19 @@
 {
-    "name": "boc/xmlcheck",
-    "description": "BOC WatchGuard Policy XML checker utility",
-    "authors": [
-        {
-            "name": "Werner Maier",
-            "email": "wm@boc.de"
-        }
-    ],
-    "require": {},
-    "require-dev": {},
-    "autoload": {
-        "psr-4": { "BOC\\": [ "lib/BOC/" ] }
+  "name": "boc/xmlcheck",
+  "description": "BOC WatchGuard Policy XML checker utility",
+  "authors": [
+    {
+      "name": "Werner Maier",
+      "email": "wm@boc.de"
     }
-
+  ],
+  "require": {},
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "BOC\\": [
+        "lib/BOC/"
+      ]
+    }
+  }
 }
