@@ -1,0 +1,33 @@
+BOC WatchGuard Policy XML checker utility.
+
+==============================================
+
+    Usage: 
+    ./xmlcheck.php args|commands
+
+    -h, --help              this help file
+    -i, --infile filename   inputfile filename
+
+    commands:
+    --listaliases           lists all aliases
+    --listpolicies          lists all policies
+
+
+==============================================
+    
+
+Prerequisites: composer
+
+Setup:
+
+	~/xmlcheck$ composer install
+
+	[...]
+	Loading composer repositories with package information
+	Updating dependencies (including require-dev)
+	Nothing to install or update
+	Generating autoload files
+
+	~/xmlcheck$ 
+
+
