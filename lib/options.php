@@ -1,12 +1,13 @@
 <?php
 
-define(VERSION, "1.1");
+define("VERSION", "0.1");
 
-$shortopts = "i:h";
+$shortopts = "i:ha:";
 $longopts = array(
     "infile:",
     "listaliases",
     "listpolicies",
+    "alias:",
     "help",
 );
 $options = getopt($shortopts, $longopts);
@@ -24,6 +25,8 @@ function displayHelpAndExit() {
     -i, --infile filename   inputfile filename
 
     commands:
+    -a aliasname, 
+      --alias aliasname     print alias aliasname
     --listaliases           lists all aliases
     --listpolicies          lists all policies
     \n";
@@ -34,12 +37,13 @@ if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
     displayHelpAndExit();
 }
 if (isset($options["infile"]) || isset($options["i"])) {
-    $xmlfile = isset($options["i"]) ? $options["i"] : $options["infiles"];
+    $xmlfile = isset($options["i"]) ? $options["i"] : $options["infile"];
     if (!is_file($xmlfile)) {
         print "error: file $xmlfile not found.\n";
         exit;
     }
 }
+
 if (!isset($xmlfile)) {
     print "error: no input file.\n";
     displayHelpAndExit();
