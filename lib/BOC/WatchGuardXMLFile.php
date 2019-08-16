@@ -14,22 +14,29 @@ class WatchGuardXMLFile
         $this->xml_policy_list = $this::getPolicyList($this->xmlfile);
     }
 
-    private function getAliasList($xml) {
-        foreach ($xml->children() as $child) {
+    private function getXMLObject($obj,$searchname) {
+        foreach ($obj->children() as $child) {
 
             $name = $child->getName();
-            if ($name != "alias-list") continue;
+            if ($name != $searchname) continue;
             return $child;
         }
     }
 
-    private function getPolicyList($xml) {
-        foreach ($xml->children() as $child) {
+    private function getAliasList($xml) {
+        return $xml->{'alias-list'};
+    }
 
-            $name = $child->getName();
-            if ($name != "policy-list") continue;
-            return $child;
-        }
+    private function getPolicyList($xml) {
+        return $xml->{'policy-list'};
+    }
+
+    private function getAliasMemberList($alias) {
+        return $alias->{'alias-member-list'};
+    }
+
+    private function getAliasMember($obj) {
+        return $obj->{'alias-member'};
     }
 
     public function listAllAliases() {
@@ -38,7 +45,7 @@ class WatchGuardXMLFile
             if (preg_match("/(\.1\.(from|to)|\.from\.\d+)$/", $alias->name)) {
                 continue;
             }
-            print $alias->name . "\n";
+            $this->printAlias($alias->name);
         }
     }
 
@@ -54,4 +61,65 @@ class WatchGuardXMLFile
         }
     }
 
+    public function resolveAliasAddress($searchstring)
+    {
+
+        $retval="";
+        $addressGroup = $this->xmlfile->{'address-group-list'}->{'address-group'};
+
+        for ($nr = 0; $nr < count($addressGroup); $nr++) {
+
+            $addgroupmember = $addressGroup[$nr];
+            if ($addgroupmember->name->__toString() == $searchstring) {
+                $member=$addgroupmember->{'addr-group-member'}->{'member'};
+
+                switch ($member->{'type'}->__toString()) {
+                    case 1:
+                        $retval = $member->{'host-ip-addr'}->__toString();
+                        break;
+                    case 2:
+                        $retval = $member->{'ip-network-addr'}->__toString() . "/" . $member->{'ip-mask'}->__toString();
+                        break;
+                    case 8:
+                        $retval = $member->{'domain'}->__toString();
+                        break;
+                    default:
+                        $retval = "unknown type: " . $member->{'type'}->__toString();
+                        print_r($member);
+                }
+            }
+        }
+        return $retval;
+    }
+    public function printAlias($aliasname) {
+
+        foreach ($this->xml_alias_list->children() as $alias) {
+            if ($alias->name != $aliasname) {
+                continue;
+            }
+            print $alias->name . "\n";
+
+            $memberlist = $alias->{'alias-member-list'};
+            for ($nr=0; $nr < count($memberlist->{'alias-member'}); $nr++) {
+                $member = $memberlist->{'alias-member'}[$nr];
+                $type = $member->type;
+                $content = "";
+                switch ($type) {
+                    case 1:
+                        $value = $memberlist->{'alias-member'}[$nr]->address->__toString();
+                        $content = $this->resolveAliasAddress($value);
+                        break;
+                    case 2:
+                        $value = $memberlist->{'alias-member'}[$nr]->{'alias-name'};
+                        break;
+                    default:
+                        $value = "unknown type";
+                }
+                printf ("%-02d  type: %d   value: %s => %s\n", $nr, $type, $value, $content);
+                if ($value == "unknown type") {
+                    print_r($member);
+                }
+            }
+        }
+    }
 }
