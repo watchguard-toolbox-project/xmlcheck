@@ -56,6 +56,71 @@ class WatchGuardAlias
         $this->refcount++;
     }
 
+    private function verbosetextout($xmlfile) {
+
+        $memberlist = $this->alias->{'alias-member-list'};
+
+        for ($nr=0; $nr < count($memberlist->{'alias-member'}); $nr++) {
+
+            $content = "";
+            $member = $memberlist->{'alias-member'}[$nr];
+            $type = $member->type;
+
+            // prepare printf statement based on interface/address/alias/etc.
+            switch ($type) {
+                case 1:
+                    if ($member->interface->__toString() != "Any") {
+                        $typestring = "interface";
+                        $value = $member->interface->__toString();
+                    } else {
+                        $typestring = "address";
+                        $value = $member->address->__toString();
+                        $content = $xmlfile->resolveAliasAddress($value);
+                    }
+                    break;
+                case 2:
+                    $typestring = "alias";
+                    $value = $member->{'alias-name'};
+                    break;
+                default:
+                    $value = "unknown type";
+            }
+            printf ("  %-02d  type:%-2d%-10s value: %s => %s\n", $nr, $type, $typestring, $value, $content);
+
+            if ($value == "unknown type") {
+                print_r($member);
+            }
+        }
+
+        if ($this->refcount > 0) {
+
+            print"\n  References: \n";
+
+            foreach ($this->referencedBy as $type => $references) {
+
+                foreach ($references as $reference) {
+                    printf ("    %-15s %-50s\n", $type, $reference);
+                }
+            }
+        }
+
+        print "\n";
+    }
+
+    private function printAliasName($xmlfile) {
+        global $options;
+
+        if ($this->refcount == 0) {
+            print $this->alias->name . " (unused)\n";
+        } else {
+            print $this->alias->name . "\n";
+        }
+
+        if (isset($options["verbose"])) {
+            $this->verbosetextout($xmlfile);
+        }
+    }
+
     public function textout($xmlfile)
     {
 
@@ -67,68 +132,15 @@ class WatchGuardAlias
         ) {
             if ($this->refcount == 0) {
 
-                print $this->alias->name . " (unused)\n";
+                $this->printAliasName($xmlfile);
 
             } else {
 
-                if (!isset( $options["unused"] ) || isset($options["verbose"])) {
-
-                    print $this->alias->name . "\n";
-
+                if (!isset( $options["unused"] )) {
+                    $this->printAliasName($xmlfile);
                 }
+
             }
-        }
-
-
-        if (isset($options["verbose"])) {
-
-            $memberlist = $this->alias->{'alias-member-list'};
-
-            for ($nr=0; $nr < count($memberlist->{'alias-member'}); $nr++) {
-
-                $content = "";
-                $member = $memberlist->{'alias-member'}[$nr];
-                $type = $member->type;
-
-                // prepare printf statement based on interface/address/alias/etc.
-                switch ($type) {
-                    case 1:
-                        if ($member->interface->__toString() != "Any") {
-                            $typestring = "interface";
-                            $value = $member->interface->__toString();
-                        } else {
-                            $typestring = "address";
-                            $value = $member->address->__toString();
-                            $content = $xmlfile->resolveAliasAddress($value);
-                        }
-                        break;
-                    case 2:
-                        $typestring = "alias";
-                        $value = $member->{'alias-name'};
-                        break;
-                    default:
-                        $value = "unknown type";
-                }
-                printf ("  %-02d  type:%-2d%-10s value: %s => %s\n", $nr, $type, $typestring, $value, $content);
-
-                if ($value == "unknown type") {
-                    print_r($member);
-                }
-            }
-
-            if ($this->refcount > 0) {
-
-                print"\n  References: \n";
-
-                foreach ($this->referencedBy as $type => $references) {
-
-                    foreach ($references as $reference) {
-                        printf ("    %-15s %-50s\n", $type, $reference);
-                    }
-                }
-            }
-
-            print "\n";
         }
     }
 
