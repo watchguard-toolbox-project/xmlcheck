@@ -10,6 +10,7 @@ $longopts = array(
     "alias:",
     "help",
     "verbose",
+    "unused",
 );
 $options = getopt($shortopts, $longopts);
 

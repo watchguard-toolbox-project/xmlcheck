@@ -8,6 +8,7 @@ BOC WatchGuard Policy XML checker utility.
     -h, --help              this help file
     -i, --infile filename   inputfile filename
     -v, --verbose           verbose output
+    --unused                show only unused aliases, if --listaliases
 
     commands:
     -a aliasname,

@@ -66,8 +66,20 @@ class WatchGuardAlias
             && $this->alias->name->__toString() != "dvcp_nets"
             && $this->alias->name->__toString() != "Any"
         ) {
-            print $this->alias->name;
-            print $this->refcount == 0 ? " (unused)\n" : "\n";
+            if (isset($options["unused"])
+                && !isset($options["verbose"])
+            ) {
+
+                if ($this->refcount == 0) {
+                    print $this->alias->name . " (unused)\n";
+                }
+
+            } else {
+
+                print $this->alias->name;
+                print $this->refcount == 0 ? " (unused)\n" : "\n";
+
+            }
         }
 
         if (isset($options["verbose"])) {
