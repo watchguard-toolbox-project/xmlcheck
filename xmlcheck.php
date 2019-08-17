@@ -3,6 +3,9 @@
 
 use BOC\WatchGuardXMLFile;
 
+$xmlfile = ""; // will be delivered by options.php
+
+/** @noinspection PhpIncludeInspection */
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
 require_once("lib/functions.php");

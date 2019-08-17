@@ -12,7 +12,7 @@ class WatchGuardAlias
         $this->alias = $element;
     }
 
-    public function textout(\BOC\WatchGuardXMLFile $xmlfile) {
+    public function textout($xmlfile) {
 
         $retval = null;
 
