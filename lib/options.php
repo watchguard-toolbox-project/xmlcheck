@@ -2,13 +2,14 @@
 
 define("VERSION", "0.1");
 
-$shortopts = "i:ha:";
+$shortopts = "i:ha:v";
 $longopts = array(
     "infile:",
     "listaliases",
     "listpolicies",
     "alias:",
     "help",
+    "verbose",
 );
 $options = getopt($shortopts, $longopts);
 
@@ -36,6 +37,11 @@ function displayHelpAndExit() {
 if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
     displayHelpAndExit();
 }
+
+if (isset($options["verbose"]) || isset($options["v"])) {
+    $options["verbose"] = true;
+}
+
 if (isset($options["infile"]) || isset($options["i"])) {
     $xmlfile = isset($options["i"]) ? $options["i"] : $options["infile"];
     if (!is_file($xmlfile)) {
