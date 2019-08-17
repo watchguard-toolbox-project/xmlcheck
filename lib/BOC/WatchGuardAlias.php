@@ -62,25 +62,23 @@ class WatchGuardAlias
         global $options;
 
         if ($this->aliastype != "interface"
-            && !isset($options["verbose"])
             && $this->alias->name->__toString() != "dvcp_nets"
             && $this->alias->name->__toString() != "Any"
         ) {
-            if (isset($options["unused"])
-                && !isset($options["verbose"])
-            ) {
+            if ($this->refcount == 0) {
 
-                if ($this->refcount == 0) {
-                    print $this->alias->name . " (unused)\n";
-                }
+                print $this->alias->name . " (unused)\n";
 
             } else {
 
-                print $this->alias->name;
-                print $this->refcount == 0 ? " (unused)\n" : "\n";
+                if (!isset( $options["unused"] ) || isset($options["verbose"])) {
 
+                    print $this->alias->name . "\n";
+
+                }
             }
         }
+
 
         if (isset($options["verbose"])) {
 
