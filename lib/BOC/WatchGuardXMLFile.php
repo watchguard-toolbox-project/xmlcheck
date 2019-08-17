@@ -8,25 +8,23 @@ use SimpleXMLElement;
 class WatchGuardXMLFile
 {
     private $xmlfile;
-    private $xml_policy_list;
     private $allAliases;
     private $allPolicies;
 
     public function __construct($xmlfilename) {
         $this->xmlfile = simplexml_load_file($xmlfilename);
-        $this->xml_policy_list = $this::getPolicyList($this->xmlfile);
         $this->getAllAliases();
+        $this->findAliasReferences();
         $this->getAllPolicies();
     }
 
+    /**
+     * Helpers
+     **/
     private function getAllAliases() {
 
         $this->allAliases = Array();
         foreach ($this->xmlfile->{'alias-list'}->children() as $alias) {
-            // ignore referenced aliases ending .1.from or .1.to or .from.[1234]
-            if (preg_match("/(\.1\.(from|to)|\.from\.\d+)$/", $alias->name)) {
-                continue;
-            }
             $this->allAliases[$alias->name->__toString()] = new WatchGuardAlias($alias);
         }
     }
@@ -49,22 +47,6 @@ class WatchGuardXMLFile
             $retval = $child;
         }
         return $retval;
-    }
-
-    private function getPolicyList($xml) {
-        return $xml->{'policy-list'};
-    }
-
-    public function listAllAliases() {
-        foreach ($this->allAliases as $aliasName => $alias) {
-            $alias->textout($this);
-        }
-    }
-
-    public function listAllPolicies() {
-        foreach ($this->allPolicies as $policyName => $policy) {
-            $policy->textout($this);
-        }
     }
 
     public function resolveAliasAddress($searchstring)
@@ -99,6 +81,65 @@ class WatchGuardXMLFile
             }
         }
         return $retval;
+    }
+
+    public function findAliasReferences() {
+        foreach ($this->allAliases as $aliasName => $alias) {
+
+            $type = "alias";
+
+            if (preg_match('/(.+)\.1\.(from|to)$/', $aliasName,$matches)) {
+                $type = "policy:$matches[2]";
+                $aliasName = $matches[1];
+            }
+
+            // get all referenced Aliases
+            $referencedAliases = $alias->getReferencedAliases();
+
+            // now store this information at the correct alias
+            foreach ($referencedAliases as $referencedAlias) {
+
+                $this->allAliases[$referencedAlias]->storeAliasReference($aliasName,$type);
+            }
+
+        }
+
+    }
+
+    public function findAliasRefByPolicy() {
+
+        foreach ($this->allPolicies as $policyName => $policy) {
+
+            // get all referenced Aliases
+            $referencedAliases = $policy->getReferencedAliases();
+
+            // now store this information at the correct alias
+            foreach ($referencedAliases as $referencedAlias) {
+                $this->allAliases[$referencedAlias]->storeAliasReference($aliasName,"policy");
+            }
+
+        }
+
+    }
+
+    /**
+     * Actions
+     **/
+    public function listAllAliases() {
+        foreach ($this->allAliases as $aliasName => $alias) {
+            // ignore referenced aliases ending .1.from or .1.to or .from.[1234]
+            // as these are refs to policies...
+            if (preg_match("/(\.1\.(from|to)|\.from\.\d+)$/", $aliasName)) {
+                continue;
+            }
+            $alias->textout($this);
+        }
+    }
+
+    public function listAllPolicies() {
+        foreach ($this->allPolicies as $policyName => $policy) {
+            $policy->textout($this);
+        }
     }
 
     public function printAlias($aliasname) {
