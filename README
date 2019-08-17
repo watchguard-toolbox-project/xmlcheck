@@ -9,13 +9,14 @@ BOC WatchGuard Policy XML checker utility.
     -i, --infile filename   inputfile filename
 
     commands:
+    -a aliasname,
+      --alias aliasname     print alias aliasname
     --listaliases           lists all aliases
     --listpolicies          lists all policies
 
 
 ==============================================
     
-
 Prerequisites: composer
 
 Setup:

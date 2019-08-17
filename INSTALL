@@ -1,0 +1,16 @@
+BOC WatchGuard Policy XML checker utility.
+
+==============================================
+
+prerequisites: composer.
+you need run composer for autoloader,
+and ensuring the SimpleXML extension is installed.
+
+~/xmlcheck$ composer install
+
+    Loading composer repositories with package information
+    Updating dependencies (including require-dev)
+    Nothing to install or update
+    Writing lock file
+    Generating autoload files
+
