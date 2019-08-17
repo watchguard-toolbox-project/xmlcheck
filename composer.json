@@ -7,7 +7,9 @@
       "email": "wm@boc.de"
     }
   ],
-  "require": {},
+  "require": {
+    "ext-SimpleXML": "*"
+  },
   "require-dev": {},
   "autoload": {
     "psr-4": {
