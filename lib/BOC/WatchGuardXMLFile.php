@@ -2,6 +2,9 @@
 
 namespace BOC;
 
+// use BOC\WatchGuardAlias;
+use SimpleXMLElement;
+
 class WatchGuardXMLFile
 {
     private $xmlfile;
@@ -14,13 +17,16 @@ class WatchGuardXMLFile
         $this->xml_policy_list = $this::getPolicyList($this->xmlfile);
     }
 
-    private function getXMLObject($obj,$searchname) {
+    private function getXMLObject(SimpleXMLElement $obj,$searchname) {
+        $retval = null;
+
         foreach ($obj->children() as $child) {
 
             $name = $child->getName();
             if ($name != $searchname) continue;
-            return $child;
+            $retval = $child;
         }
+        return $retval;
     }
 
     private function getAliasList($xml) {
@@ -80,6 +86,9 @@ class WatchGuardXMLFile
                     case 2:
                         $retval = $member->{'ip-network-addr'}->__toString() . "/" . $member->{'ip-mask'}->__toString();
                         break;
+                    case 3:
+                        $retval = $member->{'start-ip-addr'}->__toString() . "-" . $member->{'end-ip-addr'}->__toString();
+                        break;
                     case 8:
                         $retval = $member->{'domain'}->__toString();
                         break;
@@ -91,12 +100,18 @@ class WatchGuardXMLFile
         }
         return $retval;
     }
+
     public function printAlias($aliasname) {
 
         foreach ($this->xml_alias_list->children() as $alias) {
             if ($alias->name != $aliasname) {
                 continue;
             }
+
+            $WgAlias = new WatchGuardAlias($alias);
+            $WgAlias->textout($this);
+            /*
+
             print $alias->name . "\n";
 
             $memberlist = $alias->{'alias-member-list'};
@@ -120,6 +135,7 @@ class WatchGuardXMLFile
                     print_r($member);
                 }
             }
+            */
         }
     }
 }
