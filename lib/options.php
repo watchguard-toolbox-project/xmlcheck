@@ -15,7 +15,8 @@ $longopts = array(
 $options = getopt($shortopts, $longopts);
 
 // show help
-function displayHelpAndExit() {
+
+function displayHelp() {
     print "
     
     xmlcheck v" . VERSION . "
@@ -32,9 +33,15 @@ function displayHelpAndExit() {
     --listaliases           lists all aliases
     --listpolicies          lists all policies
     \n";
+}
+function displayHelpAndExit() {
+    displayHelp();
     exit;
 }
-
+function displayHelpAndError($error) {
+    displayHelp();
+    print "\nerror: $error\n\n";
+}
 if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
     displayHelpAndExit();
 }
@@ -45,8 +52,14 @@ if (isset($options["verbose"]) || isset($options["v"])) {
 
 if (isset($options["infile"]) || isset($options["i"])) {
     $xmlfile = isset($options["i"]) ? $options["i"] : $options["infile"];
+    if (is_array($xmlfile)) {
+        displayHelpAndError("-i accepts only ONE file argument.");
+        print "hint: problem might be with this option: '" . $xmlfile[1] .
+              "'.\n      is it a valid option/action/argument?\n\n";
+        exit;
+    }
     if (!is_file($xmlfile)) {
-        print "error: file $xmlfile not found.\n";
+        displayHelpAndError("file '$xmlfile' not found.");
         exit;
     }
 }
