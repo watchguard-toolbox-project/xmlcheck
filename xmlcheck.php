@@ -9,6 +9,8 @@ $xmlfile = ""; // will be delivered by options.php
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
 require_once("lib/functions.php");
+
+$options = [];
 require_once("lib/options.php");
 
 // global variables from options.php:
@@ -27,5 +29,15 @@ if (isset($options["listpolicies"])) {
 
 if (isset($options["alias"]) || isset($options["a"])) {
     $printalias = isset($options["alias"]) ? $options["alias"] : $options["a"];
-    $policyxml->printAlias($printalias);
+    if (is_array($printalias)) {
+        $printaliases = $printalias;
+    } else {
+        $printaliases = [];
+        $printaliases[] = $printalias;
+    }
+    foreach ($printaliases as $printalias) {
+        print "\n";
+        $policyxml->printAlias($printalias);
+        print "\n";
+    }
 }
