@@ -144,7 +144,7 @@ class WatchGuardXMLFile
             $referencedService = $policy->getService();
 
             // now store this information at the correct Service
-            $this->allServices[$referencedService]->storeServiceReference($policyName,"policy");
+            $this->allServices[$referencedService]->storeReference($policyName,"policy");
 
         }
 
