@@ -43,6 +43,10 @@ class WatchGuardPolicy
         return $retval;
     }
 
+    public function getService() {
+        return $this->policy->service->__toString();
+    }
+
     public function textout($xmlfile) {
         print $this->policy->name->__toString() . "\n";
     }

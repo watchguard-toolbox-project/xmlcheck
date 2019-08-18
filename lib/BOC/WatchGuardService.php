@@ -7,44 +7,72 @@ use SimpleXMLElement;
 class WatchGuardService
 {
     private $service;
+    private $refcount;
+    private $referencedBy = [];
 
     public function __construct(SimpleXMLElement $element) {
         $this->service = $element;
+        $this->refcount = 0;
     }
 
-    private function getReferencedAliasesFromAliasList($list) {
+    public function storeServiceReference($name,$type) {
+        $this->referencedBy[$type][] = $name;
+        $this->refcount++;
+    }
 
-        $retval = [];
+    public function getProperty() {
+        return $this->service->property->__toString();
+    }
 
-        for ($nr=0; $nr < count($memberlist->{'alias-member'}); $nr++) {
+    private function verbosetextout($xmlfile) {
 
-            $member = $memberlist->{'alias-member'}[$nr];
+        if ($this->refcount > 0) {
 
-            // see only aliases, type==2
-            if ($member->type == 2) {
-                $retval[] = $member->{'alias-name'}->__toString();
+            print"\n  References: \n";
+
+            foreach ($this->referencedBy as $type => $references) {
+
+                foreach ($references as $reference) {
+                    printf ("    %-15s %-50s\n", $type, $reference);
+                }
+            }
+            print "  Properrty: " . $this->getProperty() . "\n";
+        }
+
+        print "\n";
+    }
+
+    private function printName($xmlfile) {
+        global $options;
+
+        if ($this->refcount == 0) {
+            print $this->service->name . " (unused)\n";
+        } else {
+            print $this->service->name . "\n";
+        }
+
+        if (isset($options["verbose"])) {
+            $this->verbosetextout($xmlfile);
+        }
+    }
+
+    public function textout($xmlfile) {
+
+        global $options;
+
+        if (($this->refcount == 0 && $this->getProperty() == "0")
+            || isset($options['verbose'])){
+
+            $this->printName($xmlfile);
+
+        } else {
+
+            if (!isset( $options["unused"] )) {
+                $this->printName($xmlfile);
             }
 
         }
 
-
-    }
-
-    public function getReferencedAliases() {
-
-        $retval = [];
-
-        $memberlist = $this->policy->{'from-alias-list'};
-        $retval = array_merge($retval, $this->getReferencedAliasesFromAliasList($memberlist));
-
-        $memberlist = $this->policy->{'to-alias-list'};
-        $retval = array_merge($retval, $this->getReferencedAliasesFromAliasList($memberlist));
-
-        return $retval;
-    }
-
-    public function textout($xmlfile) {
-        print $this->policy->name->__toString() . "\n";
     }
 
 }

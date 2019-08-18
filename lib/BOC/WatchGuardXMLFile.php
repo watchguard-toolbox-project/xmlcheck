@@ -18,6 +18,8 @@ class WatchGuardXMLFile
         $this->findAliasReferences();
         $this->getAllPolicies();
         $this->getAllServices();
+        $this->findServiceRefByPolicy();
+        print_r($this->allServices);
     }
 
     /**
@@ -34,14 +36,16 @@ class WatchGuardXMLFile
     private function getAllPolicies() {
 
         $this->allPolicies = Array();
-        foreach ($this->xmlfile->{'policy-list'}->children() as $policy) {
+        $policyList = $this->xmlfile->{'policy-list'}->{'policy'};
+        for ($nr=0; $nr < count($policyList); $nr++) {
+            $policy=$policyList[$nr];
             $this->allPolicies[$policy->name->__toString()] = new WatchGuardPolicy($policy);
         }
     }
 
     private function getAllServices() {
 
-        $this->allServices = Array();
+        $this->allServices = [];
         foreach ($this->xmlfile->{'service-list'}->children() as $service) {
             $this->allServices[$service->name->__toString()] = new WatchGuardService($service);
         }
@@ -132,6 +136,20 @@ class WatchGuardXMLFile
 
     }
 
+    public function findServiceRefByPolicy() {
+
+        foreach ($this->allPolicies as $policyName => $policy) {
+
+            // get PolicyService
+            $referencedService = $policy->getService();
+
+            // now store this information at the correct Service
+            $this->allServices[$referencedService]->storeServiceReference($policyName,"policy");
+
+        }
+
+    }
+
     /**
      * Actions
      **/
@@ -154,7 +172,7 @@ class WatchGuardXMLFile
 
     public function listAllServices() {
         foreach ($this->allServices as $serviceName => $service) {
-            print "$serviceName\n";
+            $service->textout($this);
         }
     }
 

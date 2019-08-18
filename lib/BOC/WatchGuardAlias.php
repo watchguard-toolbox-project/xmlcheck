@@ -31,7 +31,7 @@ class WatchGuardAlias
         }
     }
 
-        public function getReferencedAliases() {
+    public function getReferencedAliases() {
 
         $retval = [];
 
