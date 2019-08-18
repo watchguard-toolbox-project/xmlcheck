@@ -1,8 +1,8 @@
 <?php
 
-define("VERSION", "0.1");
+define("VERSION", "0.2");
 
-$shortopts = "i:ha:v";
+$shortopts = "i:ha:vlp";
 $longopts = array(
     "infile:",
     "listaliases",
@@ -15,7 +15,6 @@ $longopts = array(
 $options = getopt($shortopts, $longopts);
 
 // show help
-
 function displayHelp() {
     print "
     
@@ -42,6 +41,7 @@ function displayHelpAndError($error) {
     displayHelp();
     print "\nerror: $error\n\n";
 }
+
 if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
     displayHelpAndExit();
 }
@@ -50,6 +50,7 @@ if (isset($options["verbose"]) || isset($options["v"])) {
     $options["verbose"] = true;
 }
 
+$xmlfile = "";
 if (isset($options["infile"]) || isset($options["i"])) {
     $xmlfile = isset($options["i"]) ? $options["i"] : $options["infile"];
     if (is_array($xmlfile)) {
@@ -64,8 +65,8 @@ if (isset($options["infile"]) || isset($options["i"])) {
     }
 }
 
-if (!isset($xmlfile)) {
-    print "error: no input file.\n";
-    displayHelpAndExit();
+if ($xmlfile === "") {
+    displayHelpAndError("no input file.");
+    exit;
 }
 
