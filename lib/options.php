@@ -32,6 +32,10 @@ function displayHelp() {
       --alias aliasname     print alias aliasname
     -l, --listaliases       lists all aliases
     -p, --listpolicies      lists all policies
+    
+    debug:
+    --simplexmlout          print SimpleXML structure 
+                            as read from xmlfile
     \n";
 }
 function displayHelpAndExit() {
