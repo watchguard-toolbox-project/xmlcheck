@@ -29,8 +29,8 @@ function displayHelp() {
     commands:
     -a aliasname, 
       --alias aliasname     print alias aliasname
-    --listaliases           lists all aliases
-    --listpolicies          lists all policies
+    -l, --listaliases       lists all aliases
+    -p, --listpolicies      lists all policies
     \n";
 }
 function displayHelpAndExit() {
