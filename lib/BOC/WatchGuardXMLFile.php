@@ -19,7 +19,6 @@ class WatchGuardXMLFile
         $this->getAllPolicies();
         $this->getAllServices();
         $this->findServiceRefByPolicy();
-        print_r($this->allServices);
     }
 
     /**
@@ -98,6 +97,7 @@ class WatchGuardXMLFile
     }
 
     public function findAliasReferences() {
+
         foreach ($this->allAliases as $aliasName => $alias) {
 
             $type = "alias";
@@ -113,7 +113,7 @@ class WatchGuardXMLFile
             // now store this information at the correct alias
             foreach ($referencedAliases as $referencedAlias) {
 
-                $this->allAliases[$referencedAlias]->storeAliasReference($aliasName,$type);
+                $this->allAliases[$referencedAlias]->storeReference($aliasName,$type);
             }
 
         }
@@ -129,7 +129,7 @@ class WatchGuardXMLFile
 
             // now store this information at the correct alias
             foreach ($referencedAliases as $referencedAlias) {
-                $this->allAliases[$referencedAlias]->storeAliasReference($aliasName,"policy");
+                $this->allAliases[$referencedAlias]->storeReference($aliasName,"policy");
             }
 
         }
