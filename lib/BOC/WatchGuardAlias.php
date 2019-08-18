@@ -46,14 +46,14 @@ class WatchGuardAlias extends WatchGuardObject
         return $retval;
     }
 
-    private function verbosetextout($xmlfile) {
+    protected function verbosetextout($xmlfile) {
 
-        $memberlist = $this->obj->{'alias-member-list'};
+        $nr = 0;
+        $memberlist = $this->obj->{'alias-member-list'}->{'alias-member'};
 
-        for ($nr=0; $nr < count($memberlist->{'alias-member'}); $nr++) {
+        foreach ($memberlist as $member) {
 
             $content = "";
-            $member = $memberlist->{'alias-member'}[$nr];
             $type = $member->type;
 
             // prepare printf statement based on interface/address/alias/etc.
@@ -80,6 +80,8 @@ class WatchGuardAlias extends WatchGuardObject
             if ($value == "unknown type") {
                 print_r($member);
             }
+
+            $nr++;
         }
 
         parent::verbosetextout($xmlfile);
