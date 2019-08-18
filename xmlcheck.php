@@ -19,6 +19,11 @@ require_once("lib/options.php");
 
 $policyxml = new WatchGuardXMLFile($xmlfile);
 
+if (isset($options["simplexmlout"])) {
+    print_r($policyxml);
+    exit;
+}
+
 if (isset($options["listaliases"])|| isset($options["l"])) {
     $policyxml->listAllAliases();
 }

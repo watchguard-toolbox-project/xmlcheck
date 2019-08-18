@@ -11,6 +11,7 @@ $longopts = array(
     "help",
     "verbose",
     "unused",
+    "simplexmlout",
 );
 $options = getopt($shortopts, $longopts);
 
