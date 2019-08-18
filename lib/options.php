@@ -2,11 +2,12 @@
 
 define("VERSION", "0.2");
 
-$shortopts = "i:ha:vlpu";
+$shortopts = "i:ha:vlpus";
 $longopts = array(
     "infile:",
     "listaliases",
     "listpolicies",
+    "listservices",
     "alias:",
     "help",
     "verbose",
@@ -32,6 +33,7 @@ function displayHelp() {
       --alias aliasname     print alias aliasname
     -l, --listaliases       lists all aliases
     -p, --listpolicies      lists all policies
+    -s, --listservices      lists all services
     
     debug:
     --simplexmlout          print SimpleXML structure 
@@ -51,9 +53,14 @@ if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
     displayHelpAndExit();
 }
 
+if (isset($options["listservices"]) || isset($options["s"])) {
+    $options["listservices"] = true;
+}
+
 if (isset($options["verbose"]) || isset($options["v"])) {
     $options["verbose"] = true;
 }
+
 if (isset($options["unused"]) || isset($options["u"])) {
     $options["unused"] = true;
 }

@@ -10,12 +10,14 @@ class WatchGuardXMLFile
     private $xmlfile;
     private $allAliases;
     private $allPolicies;
+    private $allServices;
 
     public function __construct($xmlfilename) {
         $this->xmlfile = simplexml_load_file($xmlfilename);
         $this->getAllAliases();
         $this->findAliasReferences();
         $this->getAllPolicies();
+        $this->getAllServices();
     }
 
     /**
@@ -34,6 +36,14 @@ class WatchGuardXMLFile
         $this->allPolicies = Array();
         foreach ($this->xmlfile->{'policy-list'}->children() as $policy) {
             $this->allPolicies[$policy->name->__toString()] = new WatchGuardPolicy($policy);
+        }
+    }
+
+    private function getAllServices() {
+
+        $this->allServices = Array();
+        foreach ($this->xmlfile->{'service-list'}->children() as $service) {
+            $this->allServices[$service->name->__toString()] = new WatchGuardService($service);
         }
     }
 
@@ -142,7 +152,17 @@ class WatchGuardXMLFile
         }
     }
 
+    public function listAllServices() {
+        foreach ($this->allServices as $serviceName => $service) {
+            print "$serviceName\n";
+        }
+    }
+
     public function printAlias($aliasname) {
-        $this->allAliases[$aliasname]->textout($this);
+        if (isset($this->allAliases[$aliasname])) {
+            $this->allAliases[$aliasname]->textout($this);
+        } else {
+            displayHelpAndError("alias '$aliasname' not found.");
+        }
     }
 }

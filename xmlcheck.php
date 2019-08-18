@@ -32,6 +32,10 @@ if (isset($options["listpolicies"]) || isset($options["p"])) {
     $policyxml->listAllPolicies();
 }
 
+if (isset($options["listservices"])) {
+    $policyxml->listAllServices();
+}
+
 if (isset($options["alias"]) || isset($options["a"])) {
     $printalias = isset($options["alias"]) ? $options["alias"] : $options["a"];
     if (is_array($printalias)) {
