@@ -7,13 +7,19 @@ use SimpleXMLElement;
 
 class WatchGuardXMLFile
 {
-    private $xmlfile;
+    private $xmlfile;       // complete xml structure as SimpleXML object
+
+    // arrays for all aliases, policies and services:
     private $allAliases;
     private $allPolicies;
     private $allServices;
 
     public function __construct($xmlfilename) {
         $this->xmlfile = simplexml_load_file($xmlfilename);
+        $this->allAliases  = [];
+        $this->allPolicies = [];
+        $this->allServices = [];
+
         $this->getAllAliases();
         $this->findAliasReferences();
         $this->getAllPolicies();
@@ -26,28 +32,28 @@ class WatchGuardXMLFile
      **/
     private function getAllAliases() {
 
-        $this->allAliases = Array();
         foreach ($this->xmlfile->{'alias-list'}->children() as $alias) {
             $this->allAliases[$alias->name->__toString()] = new WatchGuardAlias($alias);
         }
+
     }
 
     private function getAllPolicies() {
 
-        $this->allPolicies = Array();
         $policyList = $this->xmlfile->{'policy-list'}->{'policy'};
-        for ($nr=0; $nr < count($policyList); $nr++) {
-            $policy=$policyList[$nr];
+
+        foreach ($policyList as $policy) {
             $this->allPolicies[$policy->name->__toString()] = new WatchGuardPolicy($policy);
         }
+
     }
 
     private function getAllServices() {
 
-        $this->allServices = [];
         foreach ($this->xmlfile->{'service-list'}->children() as $service) {
             $this->allServices[$service->name->__toString()] = new WatchGuardService($service);
         }
+
     }
 
     private function getXMLObject(SimpleXMLElement $obj,$searchname) {
@@ -68,9 +74,8 @@ class WatchGuardXMLFile
         $retval="";
         $addressGroup = $this->xmlfile->{'address-group-list'}->{'address-group'};
 
-        for ($nr = 0; $nr < count($addressGroup); $nr++) {
+        foreach ($addressGroup as $addgroupmember) {
 
-            $addgroupmember = $addressGroup[$nr];
             if ($addgroupmember->name->__toString() == $searchstring) {
                 $member=$addgroupmember->{'addr-group-member'}->{'member'};
 
@@ -102,6 +107,8 @@ class WatchGuardXMLFile
 
             $type = "alias";
 
+            // only search alias references
+            // naming: ALIAS_NAME.1.from / ALIAS_NAME.1.to
             if (preg_match('/(.+)\.1\.(from|to)$/', $aliasName,$matches)) {
                 $type = "policy:$matches[2]";
                 $aliasName = $matches[1];
@@ -112,7 +119,6 @@ class WatchGuardXMLFile
 
             // now store this information at the correct alias
             foreach ($referencedAliases as $referencedAlias) {
-
                 $this->allAliases[$referencedAlias]->storeReference($aliasName,$type);
             }
 
