@@ -2,7 +2,7 @@
 
 define("VERSION", "0.2");
 
-$shortopts = "i:ha:vlp";
+$shortopts = "i:ha:vlpu";
 $longopts = array(
     "infile:",
     "listaliases",
@@ -48,6 +48,9 @@ if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
 
 if (isset($options["verbose"]) || isset($options["v"])) {
     $options["verbose"] = true;
+}
+if (isset($options["unused"]) || isset($options["u"])) {
+    $options["unused"] = true;
 }
 
 $xmlfile = "";
