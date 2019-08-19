@@ -22,7 +22,7 @@ class WatchGuardObject
         $this->refcount++;
     }
 
-    private function verbosetextout($xmlfile) {
+    protected function verbosetextout($xmlfile) {
 
         if ($this->refcount > 0) {
 
@@ -39,7 +39,7 @@ class WatchGuardObject
         print "\n";
     }
 
-    private function printName($xmlfile) {
+    protected function printName($xmlfile) {
         global $options;
 
         if ($this->refcount == 0) {
