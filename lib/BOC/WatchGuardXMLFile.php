@@ -21,9 +21,9 @@ class WatchGuardXMLFile
         $this->allServices = [];
 
         $this->getAllAliases();
-        $this->findAliasReferences();
         $this->getAllPolicies();
         $this->getAllServices();
+        $this->findAliasReferences();
         $this->findServiceRefByPolicy();
     }
 
@@ -107,15 +107,37 @@ class WatchGuardXMLFile
 
             $type = "alias";
 
-            // only search alias references
+            // special case: policy reference: .1.(from|to)
             // naming: ALIAS_NAME.1.from / ALIAS_NAME.1.to
             if (preg_match('/(.+)\.1\.(from|to)$/', $aliasName,$matches)) {
                 $type = "policy:$matches[2]";
                 $aliasName = $matches[1];
-            }
+                $policyName = $aliasName . "-00";
+                // get all referenced Aliases
+                $referencedAliases = $alias->getReferencedAliases();
+                switch ($matches[2]) {
+                    case "from":
+                        if (isset($this->allPolicies[$policyName])) {
+                            $this->allPolicies[$policyName]->storeAliasesFrom($referencedAliases);
+                        } else {
+                            print "??? Policy $policyName?\n";
+                        }
+                        break;
+                    case "to":
+                        if (isset($this->allPolicies[$policyName])) {
+                            $this->allPolicies[$policyName]->storeAliasesTo($referencedAliases);
+                        } else {
+                            print "??? Policy $policyName?\n";
+                        }
+                        break;
+                }
 
-            // get all referenced Aliases
-            $referencedAliases = $alias->getReferencedAliases();
+
+            } else {
+                // get all referenced Aliases
+                $referencedAliases = $alias->getReferencedAliases();
+
+            }
 
             // now store this information at the correct alias
             foreach ($referencedAliases as $referencedAlias) {
