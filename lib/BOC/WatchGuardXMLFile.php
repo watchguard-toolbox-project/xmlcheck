@@ -40,9 +40,7 @@ class WatchGuardXMLFile
 
     private function getAllPolicies() {
 
-        $policyList = $this->xmlfile->{'policy-list'}->{'policy'};
-
-        foreach ($policyList as $policy) {
+        foreach ($this->xmlfile->{'policy-list'}->{'policy'} as $policy) {
             $this->allPolicies[$policy->name->__toString()] = new WatchGuardPolicy($policy);
         }
 
