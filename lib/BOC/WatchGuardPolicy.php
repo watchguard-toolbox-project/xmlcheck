@@ -4,51 +4,77 @@ namespace BOC;
 
 use SimpleXMLElement;
 
-class WatchGuardPolicy
+class WatchGuardPolicy extends WatchGuardObject
 {
-    private $policy;
+
+    private $aliasesTo;
+    private $aliasesFrom;
 
     public function __construct(SimpleXMLElement $element) {
-        $this->policy = $element;
+        parent::__construct($element);
     }
 
     private function getReferencedAliasesFromAliasList($list) {
 
         $retval = [];
 
-        for ($nr=0; $nr < count($memberlist->{'alias-member'}); $nr++) {
-
-            $member = $memberlist->{'alias-member'}[$nr];
-
-            // see only aliases, type==2
-            if ($member->type == 2) {
-                $retval[] = $member->{'alias-name'}->__toString();
-            }
-
+        $aliasmemberlist = $list->{'alias'};
+        print_r($aliasmemberlist);
+        exit;
+        foreach ($aliasmemberlist as $member) {
+                $retval[] = $member->__toString();
         }
 
-
+        return $retval;
     }
 
     public function getReferencedAliases() {
 
         $retval = [];
 
-        $memberlist = $this->policy->{'from-alias-list'};
-        $retval = array_merge($retval, $this->getReferencedAliasesFromAliasList($memberlist));
+        $this->aliasesFrom = $this->getReferencedAliasesFromAliasList($this->obj->{'from-alias-list'});
+        $retval = array_merge($retval, $this->aliasesFrom);
 
-        $memberlist = $this->policy->{'to-alias-list'};
-        $retval = array_merge($retval, $this->getReferencedAliasesFromAliasList($memberlist));
+        $this->aliasesTo = $this->getReferencedAliasesFromAliasList($this->obj->{'to-alias-list'});
+        $retval = array_merge($retval, $this->aliasesTo);
 
         return $retval;
     }
 
     public function getService() {
-        return $this->policy->service->__toString();
+        return $this->obj->service->__toString();
+    }
+
+    protected function verbosetextout($xmlfile)
+    {
+        return;
+        global $options;
+
+        if (isset($options['verbose'])) {
+
+            print_r($this->obj);
+            print_r($this->aliasesTo);
+            print_r($this->aliasesFrom);
+
+            $fromAliases = implode(', ', $this->aliasesFrom);
+            $toAliases   = implode(', ', $this->aliasesTo);
+
+            print "  From   : " . $fromAliases . "\n";
+            print "  To     : " . $toAliases . "\n";
+            print "  Service: " . $this->getService() . "\n";
+        }
+
+        print "\n";
     }
 
     public function textout($xmlfile) {
-        print $this->policy->name->__toString() . "\n";
+        global $options;
+
+        print $this->obj->name->__toString() . "\n";
+
+        if (isset($options["verbose"])) {
+            $this->verbosetextout($xmlfile);
+        }
     }
 
 }
