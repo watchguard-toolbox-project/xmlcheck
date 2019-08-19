@@ -12,6 +12,7 @@ class WatchGuardPolicy extends WatchGuardObject
 
     public function __construct(SimpleXMLElement $element) {
         parent::__construct($element);
+        $this->refcount = 42;
     }
 
     private function getReferencedAliasesFromAliasList($list) {
@@ -19,8 +20,6 @@ class WatchGuardPolicy extends WatchGuardObject
         $retval = [];
 
         $aliasmemberlist = $list->{'alias'};
-        print_r($aliasmemberlist);
-        exit;
         foreach ($aliasmemberlist as $member) {
                 $retval[] = $member->__toString();
         }
@@ -32,10 +31,12 @@ class WatchGuardPolicy extends WatchGuardObject
 
         $retval = [];
 
-        $this->aliasesFrom = $this->getReferencedAliasesFromAliasList($this->obj->{'from-alias-list'});
+        $fromaliaslist = $this->obj->children()->{'from-alias-list'};
+        $this->aliasesFrom = $this->getReferencedAliasesFromAliasList($fromaliaslist);
         $retval = array_merge($retval, $this->aliasesFrom);
 
-        $this->aliasesTo = $this->getReferencedAliasesFromAliasList($this->obj->{'to-alias-list'});
+        $toaliaslist = $this->obj->children()->{'to-alias-list'};
+        $this->aliasesTo = $this->getReferencedAliasesFromAliasList($toaliaslist);
         $retval = array_merge($retval, $this->aliasesTo);
 
         return $retval;
@@ -47,14 +48,9 @@ class WatchGuardPolicy extends WatchGuardObject
 
     protected function verbosetextout($xmlfile)
     {
-        return;
         global $options;
 
         if (isset($options['verbose'])) {
-
-            print_r($this->obj);
-            print_r($this->aliasesTo);
-            print_r($this->aliasesFrom);
 
             $fromAliases = implode(', ', $this->aliasesFrom);
             $toAliases   = implode(', ', $this->aliasesTo);
