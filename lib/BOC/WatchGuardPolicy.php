@@ -12,7 +12,8 @@ class WatchGuardPolicy extends WatchGuardObject
 
     public function __construct(SimpleXMLElement $element) {
         parent::__construct($element);
-        $this->refcount = 42;
+        $this->aliasesTo   = [];
+        $this->aliasesFrom = [];
     }
 
     private function getReferencedAliasesFromAliasList($list) {
@@ -40,6 +41,14 @@ class WatchGuardPolicy extends WatchGuardObject
         $retval = array_merge($retval, $this->aliasesTo);
 
         return $retval;
+    }
+
+    public function storeAliasesTo ($aliasarray) {
+        $this->aliasesTo = array_merge($this->aliasesTo, $aliasarray);
+    }
+
+    public function storeAliasesFrom ($aliasarray) {
+        $this->aliasesFrom = array_merge($this->aliasesTo, $aliasarray);
     }
 
     public function getService() {
