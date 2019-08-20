@@ -1,7 +1,15 @@
 #!/usr/bin/php
 <?php
+/**
+ * xmlcheck.php - cli tool for checking watchguard xml configuration files
+ *
+ * commandline tool for checking watchguard xml configuration files
+ * initial idea has been to check for unused aliases
+ *
+ */
 
 use BOC\WatchGuardXMLFile;
+
 
 $xmlfile = ""; // will be delivered by options.php
 

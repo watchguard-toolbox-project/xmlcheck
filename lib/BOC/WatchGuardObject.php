@@ -1,15 +1,38 @@
 <?php
+/**
+ * Base class of WatchGuardXMLfile objects
+ *
+ * @author Werner Maier (wm@boc.de)
+ * @copyright 2019 BOC IT-Security GmbH, www.boc.de
+ */
 
 namespace BOC;
 
 use SimpleXMLElement;
 
+/**
+ * Class WatchGuardObject
+ * @package BOC
+ */
 class WatchGuardObject
 {
+    /**
+     * @var SimpleXMLElement stored object
+     */
     protected $obj;
+    /**
+     * @var array list of object names which reference this object.
+     */
     protected $referencedBy;
+    /**
+     * @var int count of references to this object
+     */
     protected $refcount;
 
+    /**
+     * WatchGuardObject constructor.
+     * @param SimpleXMLElement $element
+     */
     public function __construct(SimpleXMLElement $element)
     {
         $this->obj = $element;
@@ -17,11 +40,20 @@ class WatchGuardObject
         $this->refcount = 0;
     }
 
-    public function storeReference($name,$type) {
+    /**
+     * stores a reference to this object.
+     * @param $name string name of reference to store
+     * @param $type string type of reference (policy|alias|...)
+     */
+    public function storeReference($name, $type) {
         $this->referencedBy[$type][] = $name;
         $this->refcount++;
     }
 
+    /**
+     * print the full content of $this
+     * @param $xmlfile WatchGuardXMLFile in which other objects can be found
+     */
     protected function verbosetextout($xmlfile) {
 
         if ($this->refcount > 0) {
@@ -39,6 +71,10 @@ class WatchGuardObject
         print "\n";
     }
 
+    /**
+     * print the name of $this
+     * @param $xmlfile WatchGuardXMLFile in which other objects can be found
+     */
     protected function printName($xmlfile) {
         global $options;
 
@@ -53,6 +89,10 @@ class WatchGuardObject
         }
     }
 
+    /**
+     * print the content of $this
+     * @param $xmlfile WatchGuardXMLFile in which other objects can be found
+     */
     public function textout($xmlfile)
     {
 

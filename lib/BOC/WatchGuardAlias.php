@@ -4,10 +4,21 @@ namespace BOC;
 
 use SimpleXMLElement;
 
+/**
+ * Class WatchGuardAlias
+ * @package BOC
+ */
 class WatchGuardAlias extends WatchGuardObject
 {
+    /**
+     * @var string
+     */
     protected $type;
 
+    /**
+     * WatchGuardAlias constructor.
+     * @param SimpleXMLElement $element
+     */
     public function __construct(SimpleXMLElement $element)
     {
         parent::__construct($element);
@@ -25,6 +36,9 @@ class WatchGuardAlias extends WatchGuardObject
         }
     }
 
+    /**
+     * @return array of referencedAlias->__toString();
+     */
     public function getReferencedAliases() {
 
         $retval = [];
@@ -46,6 +60,9 @@ class WatchGuardAlias extends WatchGuardObject
         return $retval;
     }
 
+    /**
+     * @param WatchGuardXMLFile $xmlfile
+     */
     protected function verbosetextout($xmlfile) {
 
         $nr = 0;
@@ -88,6 +105,9 @@ class WatchGuardAlias extends WatchGuardObject
 
     }
 
+    /**
+     * @param WatchGuardXMLFile $xmlfile
+     */
     public function textout($xmlfile)
     {
 

@@ -1,5 +1,16 @@
 <?php
+/**
+ * options.php - defining cli params and parsing getopt array. helptext.
+ *
+ * also helptext is defined here.
+ *
+ * @author       Werner Maier <wm@boc.de>
+ * @copyright    (C) 2019 BOC IT-Security GmbH
+ */
 
+/**
+ * Version
+ */
 define("VERSION", "0.2");
 
 $shortopts = "i:ha:vlpus";
@@ -17,6 +28,10 @@ $longopts = array(
 $options = getopt($shortopts, $longopts);
 
 // show help
+/**
+ * displays help text.
+ *
+ */
 function displayHelp() {
     print "
     
@@ -40,10 +55,20 @@ function displayHelp() {
                             as read from xmlfile
     \n";
 }
+
+/**
+ * displays help text and exits.
+ */
 function displayHelpAndExit() {
     displayHelp();
     exit;
 }
+
+/**
+ * displays help text and error string
+ *
+ * @param $error    string
+ */
 function displayHelpAndError($error) {
     displayHelp();
     print "\nerror: $error\n\n";
