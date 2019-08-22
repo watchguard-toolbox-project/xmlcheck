@@ -16,6 +16,7 @@ use SimpleXMLElement;
 class WatchGuardAlias extends WatchGuardObject
 {
     /**
+     * type of Alias: address, alias, group, etc.
      * @var string
      */
     protected $type;
@@ -42,6 +43,7 @@ class WatchGuardAlias extends WatchGuardObject
     }
 
     /**
+     * get all referenced aliases contained in this alias
      * @return array of referencedAlias->__toString();
      */
     public function getReferencedAliases() {
@@ -66,6 +68,8 @@ class WatchGuardAlias extends WatchGuardObject
     }
 
     /**
+     * verbose output of alias contents.
+     * overloads base class method
      * @param WatchGuardXMLFile $xmlfile
      */
     protected function verbosetextout($xmlfile) {
@@ -111,6 +115,9 @@ class WatchGuardAlias extends WatchGuardObject
     }
 
     /**
+     * output for alias objects, suppressing some defaults
+     * overloads base class method
+     *
      * @param WatchGuardXMLFile $xmlfile
      */
     public function textout($xmlfile)
