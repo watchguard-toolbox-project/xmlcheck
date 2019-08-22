@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Alias object class.
+ *
+ * @author Werner Maier (wm@boc.de)
+ * @copyright 2019 BOC IT-Security GmbH
+ */
 namespace BOC;
 
 use SimpleXMLElement;
