@@ -1,3 +1,3 @@
-xmlcheck
+# xmlcheck
 
-Homepage: https://watchguard-toolbox-project/xmlcheck.html
+Homepage: https://watchguard-toolbox-project.github.io/xmlcheck.html
