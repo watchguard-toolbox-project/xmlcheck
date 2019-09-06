@@ -47,6 +47,12 @@ class WatchGuardXMLFile
     private $allServices;
 
     /**
+     * array for all tags from this xmlfile
+     * @var array
+     */
+    private $allTags;
+
+    /**
      * WatchGuardXMLFile constructor.
      *
      * loads the xmlfile, initializes all aliases, policies and services.
@@ -58,12 +64,20 @@ class WatchGuardXMLFile
         $this->allAliases  = [];
         $this->allPolicies = [];
         $this->allServices = [];
+        $this->allTags = [];
 
+        // initialize aliases, services and tags
         $this->getAllAliases();
-        $this->getAllPolicies();
         $this->getAllServices();
+        $this->getAllTags();
+
+        // initialize policies (gets also references to tags and aliases)
+        $this->getAllPolicies();
+
+        // now find aliases in aliases
         $this->findAliasReferences();
         $this->findServiceRefByPolicy();
+        $this->findTagRefByPolicy();
     }
 
     /**
@@ -73,6 +87,17 @@ class WatchGuardXMLFile
 
         foreach ($this->xmlfile->{'alias-list'}->children() as $alias) {
             $this->allAliases[$alias->name->__toString()] = new WatchGuardAlias($alias);
+        }
+
+    }
+
+    /**
+     * reads all tags from xml and sets the pointer into allTags array
+     **/
+    private function getAllTags() {
+
+        foreach ($this->xmlfile->{'policy-tag-list'}->children() as $tag) {
+            $this->allTags[$tag->name->__toString()] = new WatchGuardTag($tag);
         }
 
     }
@@ -192,14 +217,14 @@ class WatchGuardXMLFile
                         if (isset($this->allPolicies[$policyName])) {
                             $this->allPolicies[$policyName]->storeAliasesFrom($referencedAliases);
                         } else {
-                            print "??? Policy $policyName?\n";
+                            // TODO: print "??? Policy $policyName?\n";
                         }
                         break;
                     case "to":
                         if (isset($this->allPolicies[$policyName])) {
                             $this->allPolicies[$policyName]->storeAliasesTo($referencedAliases);
                         } else {
-                            print "??? Policy $policyName?\n";
+                            // TODO: print "??? Policy $policyName?\n";
                         }
                         break;
                 }
@@ -232,7 +257,34 @@ class WatchGuardXMLFile
 
             // now store this information at the correct alias
             foreach ($referencedAliases as $referencedAlias) {
-                $this->allAliases[$referencedAlias]->storeReference($aliasName,"policy");
+                $this->allAliases[$referencedAlias]->storeReference($policyName,"policy");
+            }
+
+        }
+
+    }
+
+    /**
+     * stores policy references to tags
+     *
+     * tags are not stored in <policy-list> but in <abs-policy-list>
+     * for whatever reason... so loop over abs-policy-list also for tags.
+     *
+     */
+    public function findTagRefByPolicy() {
+
+        foreach ($this->xmlfile->{'abs-policy-list'}->{'abs-policy'} as $policy) {
+
+            $policyName = $policy->name->__toString();
+
+            // <tag-list> is not existend if there are not <tag>s...
+            if (isset($policy->{'tag-list'}->{'tag'})) {
+
+                foreach ($policy->{'tag-list'} as $tag) {
+                    $tagName = $tag->tag->__toString();
+                    $this->allTags[$tagName]->storeReference($policyName,"policy");
+                }
+
             }
 
         }
@@ -250,7 +302,11 @@ class WatchGuardXMLFile
             $referencedService = $policy->getService();
 
             // now store this information at the correct Service
-            $this->allServices[$referencedService]->storeReference($policyName,"policy");
+            if (isset($this->allServices[$referencedService])) {
+                $this->allServices[$referencedService]->storeReference($policyName, "policy");
+            } else {
+                // TODO: print "not defined: this->allServices[$referencedService]";
+            }
 
         }
 
@@ -280,6 +336,15 @@ class WatchGuardXMLFile
     public function listAllPolicies() {
         foreach ($this->allPolicies as $policyName => $policy) {
             $policy->textout($this);
+        }
+    }
+
+    /**
+     * lists (all) tags in this xmlfile
+     */
+    public function listAllTags() {
+        foreach ($this->allTags as $tagName => $tag) {
+            $tag->textout($this);
         }
     }
 
