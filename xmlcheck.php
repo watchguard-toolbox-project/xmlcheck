@@ -32,11 +32,15 @@ if (isset($options["simplexmlout"])) {
     exit;
 }
 
-if (isset($options["listaliases"])|| isset($options["l"])) {
+if (isset($options["listaliases"])) {
     $policyxml->listAllAliases();
 }
 
-if (isset($options["listpolicies"]) || isset($options["p"])) {
+if (isset($options["listtags"])) {
+    $policyxml->listAllTags();
+}
+
+if (isset($options["listpolicies"])) {
     $policyxml->listAllPolicies();
 }
 

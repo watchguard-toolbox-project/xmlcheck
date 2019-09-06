@@ -76,6 +76,27 @@ class WatchGuardPolicy extends WatchGuardObject
     }
 
     /**
+     * find referenced tags in policy
+     * @return array
+     */
+    public function getReferencedTags() {
+
+        $retval = [];
+
+        print_r($this->obj->children());
+        $fromaliaslist = $this->obj->children()->{'from-alias-list'};
+        $this->aliasesFrom = $this->getReferencedAliasesFromAliasList($fromaliaslist);
+        $retval = array_merge($retval, $this->aliasesFrom);
+
+        $toaliaslist = $this->obj->children()->{'to-alias-list'};
+        $this->aliasesTo = $this->getReferencedAliasesFromAliasList($toaliaslist);
+        $retval = array_merge($retval, $this->aliasesTo);
+
+        return $retval;
+    }
+
+
+    /**
      * stores the alias into the aliasesTo array.
      * @param $aliasarray
      */
