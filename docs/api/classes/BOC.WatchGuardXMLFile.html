@@ -143,7 +143,13 @@
         </a>
     </li>
 
-                                                                                                                                                                                                                                                                                                                                        <li class="method public">
+                                                                                                        <li class="method public">
+        <a href="#method_findTagRefByPolicy" title="findTagRefByPolicy :: stores policy references to tags">
+            <span class="description">stores policy references to tags</span><pre>findTagRefByPolicy</pre>
+        </a>
+    </li>
+
+                                                                                                                                                                                                                                                                                                                                                                                                <li class="method public">
         <a href="#method_listAllAliases" title="listAllAliases :: lists (all) aliases in this xmlfile">
             <span class="description">lists (all) aliases in this xmlfile</span><pre>listAllAliases</pre>
         </a>
@@ -158,6 +164,12 @@
                                                                                                         <li class="method public">
         <a href="#method_listAllServices" title="listAllServices :: lists (all) services in this xmlfile">
             <span class="description">lists (all) services in this xmlfile</span><pre>listAllServices</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_listAllTags" title="listAllTags :: lists (all) tags in this xmlfile">
+            <span class="description">lists (all) tags in this xmlfile</span><pre>listAllTags</pre>
         </a>
     </li>
 
@@ -177,11 +189,11 @@
         </li>
         <li class="nav-header protected">» Protected
             <ul>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </ul>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </ul>
         </li>
         <li class="nav-header private">» Private
             <ul>
-                                                                                                                                                                                                                            <li class="method private">
+                                                                                                                                                                                                                                                                <li class="method private">
                             <a href="#method_getAllAliases" title="getAllAliases :: reads all aliases from xml and sets the pointer into allAliases array">
                                 <span class="description">reads all aliases from xml and sets the pointer into allAliases array</span><pre>getAllAliases</pre>
                             </a>
@@ -197,11 +209,16 @@
                             </a>
                         </li>
                                                                                 <li class="method private">
+                            <a href="#method_getAllTags" title="getAllTags :: reads all tags from xml and sets the pointer into allTags array">
+                                <span class="description">reads all tags from xml and sets the pointer into allTags array</span><pre>getAllTags</pre>
+                            </a>
+                        </li>
+                                                                                <li class="method private">
                             <a href="#method_getXMLObject" title="getXMLObject :: searchs an xml object by name and returns the found simpleXMLElement">
                                 <span class="description">searchs an xml object by name and returns the found simpleXMLElement</span><pre>getXMLObject</pre>
                             </a>
                         </li>
-                                                                                                                                                                                                                                    </ul>
+                                                                                                                                                                                                                                                                        </ul>
         </li>
         <li class="nav-header">
             <i class="icon-custom icon-constant"></i> Constants
@@ -371,6 +388,41 @@ a quick start with hitting feels like about 98%</p></div>
                             </div>
 
                         </div>
+                                            <a id="method_findTagRefByPolicy"></a>
+                        <div class="element clickable method public  method_findTagRefByPolicy" data-toggle="collapse" data-target=".method_findTagRefByPolicy .collapse">
+                            <h2>stores policy references to tags</h2>
+                            <pre>findTagRefByPolicy() </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"><p>tags are not stored in <policy-list> but in <abs-policy-list>
+for whatever reason... so loop over abs-policy-list also for tags.</p></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                                                    </table>
+
+                                    
+                                                                    </div>
+                            </div>
+
+                        </div>
                                             <a id="method_getAllAliases"></a>
                         <div class="element clickable method private  method_getAllAliases" data-toggle="collapse" data-target=".method_getAllAliases .collapse">
                             <h2>reads all aliases from xml and sets the pointer into allAliases array</h2>
@@ -444,6 +496,40 @@ it is stored at the alias object.</p></div>
                         <div class="element clickable method private  method_getAllServices" data-toggle="collapse" data-target=".method_getAllServices .collapse">
                             <h2>reads all services from xml and sets the pointer into allServices array</h2>
                             <pre>getAllServices() </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                                                    </table>
+
+                                    
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_getAllTags"></a>
+                        <div class="element clickable method private  method_getAllTags" data-toggle="collapse" data-target=".method_getAllTags .collapse">
+                            <h2>reads all tags from xml and sets the pointer into allTags array</h2>
+                            <pre>getAllTags() </pre>
                             <div class="labels">
                                                                                                                                                                                             </div>
 
@@ -577,6 +663,40 @@ it is stored at the alias object.</p></div>
                         <div class="element clickable method public  method_listAllServices" data-toggle="collapse" data-target=".method_listAllServices .collapse">
                             <h2>lists (all) services in this xmlfile</h2>
                             <pre>listAllServices() </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                                                    </table>
+
+                                    
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_listAllTags"></a>
+                        <div class="element clickable method public  method_listAllTags" data-toggle="collapse" data-target=".method_listAllTags .collapse">
+                            <h2>lists (all) tags in this xmlfile</h2>
+                            <pre>listAllTags() </pre>
                             <div class="labels">
                                                                                                                                                                                             </div>
 
@@ -774,6 +894,32 @@ and partly things like interfaces.</p></div>
                                                                             </div>
                                 </div>
                             </div>
+                                                    <a id="property_allTags"> </a>
+                            <div class="element clickable property  private property_allTags" data-toggle="collapse" data-target=".property_allTags .collapse">
+                                <h2>array for all tags from this xmlfile</h2>
+                                <pre>allTags : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
                                                             </div>
             </div>
             <a id="\BOC\WatchGuardXMLFile"></a>
@@ -794,7 +940,7 @@ and partly things like interfaces.</p></div>
             Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
             <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
             Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
-            generated on Sat, 24 Aug 2019 17:26:47 +0000.<br/>
+            generated on Fri, 06 Sep 2019 21:04:26 +0000.<br/>
     </footer>
     </body>
 </html>
