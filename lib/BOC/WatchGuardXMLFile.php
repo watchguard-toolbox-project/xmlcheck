@@ -217,16 +217,14 @@ class WatchGuardXMLFile
                         if (isset($this->allPolicies[$policyName])) {
                             $this->allPolicies[$policyName]->storeAliasesFrom($referencedAliases);
                         } else {
-                            // TODO
-                            // print "??? Policy $policyName?\n";
+                            // TODO: print "??? Policy $policyName?\n";
                         }
                         break;
                     case "to":
                         if (isset($this->allPolicies[$policyName])) {
                             $this->allPolicies[$policyName]->storeAliasesTo($referencedAliases);
                         } else {
-                            // TODO
-                            //print "??? Policy $policyName?\n";
+                            // TODO: print "??? Policy $policyName?\n";
                         }
                         break;
                 }
@@ -307,8 +305,7 @@ class WatchGuardXMLFile
             if (isset($this->allServices[$referencedService])) {
                 $this->allServices[$referencedService]->storeReference($policyName, "policy");
             } else {
-                // TODO
-                // print "not defined: this->allServices[$referencedService]";
+                // TODO: print "not defined: this->allServices[$referencedService]";
             }
 
         }
