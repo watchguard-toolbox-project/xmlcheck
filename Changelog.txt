@@ -1,0 +1,14 @@
+xmlcheck.php - Changelog
+------------------------
+
+v0.3
+----
+    * fixed "--listtags --unused" - now correct if more than one tag per policy
+
+v0.2
+----
+    * added --listtags
+
+v0.1
+----
+    * initial release
