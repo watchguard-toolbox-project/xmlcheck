@@ -11,7 +11,7 @@
 /**
  * Version
  */
-define("VERSION", "0.2");
+    define("VERSION", "0.3");
 
 $shortopts = "i:ha:vlpust";
 $longopts = array(
