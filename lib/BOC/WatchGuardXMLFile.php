@@ -277,11 +277,11 @@ class WatchGuardXMLFile
 
             $policyName = $policy->name->__toString();
 
-            // <tag-list> is not existend if there are not <tag>s...
-            if (isset($policy->{'tag-list'}->{'tag'})) {
-
-                foreach ($policy->{'tag-list'} as $tag) {
-                    $tagName = $tag->tag->__toString();
+            // <tag-list> is not existend => thus count() is 0. if there are no <tag>s...
+            if ($policy->{'tag-list'}->count()) {
+                // iterate over all single tags ising xpath
+                foreach ($policy->{'tag-list'}->xpath('tag') as $tag) {
+                    $tagName = $tag->__toString();
                     $this->allTags[$tagName]->storeReference($policyName,"policy");
                 }
 
