@@ -1,6 +1,10 @@
 xmlcheck.php - Changelog
 ------------------------
 
+v0.4
+----
+    * added "--enabled" and "--disabled" for filtering policy output
+
 v0.3
 ----
     * fixed "--listtags --unused" - now correct if more than one tag per policy
