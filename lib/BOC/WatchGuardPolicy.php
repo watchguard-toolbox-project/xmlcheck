@@ -121,6 +121,21 @@ class WatchGuardPolicy extends WatchGuardObject
     }
 
     /**
+     * returns the enable/disable state of this policy
+     * @return bool
+     */
+    public function isEnabled() {
+
+        $result = false;
+
+        if ($this->obj->enable == 1) {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    /**
      * detailed printout of policy information
      * @param WatchGuardXMLFile $xmlfile
      */
@@ -136,6 +151,7 @@ class WatchGuardPolicy extends WatchGuardObject
             print "  From   : " . $fromAliases . "\n";
             print "  To     : " . $toAliases . "\n";
             print "  Service: " . $this->getService() . "\n";
+            print "  Enabled: " . ($this->isEnabled() === true ? "yes" : "no") . "\n";
         }
 
         print "\n";
@@ -148,10 +164,27 @@ class WatchGuardPolicy extends WatchGuardObject
     public function textout($xmlfile) {
         global $options;
 
-        print $this->obj->name->__toString() . "\n";
+        $display = true;
 
-        if (isset($options["verbose"])) {
-            $this->verbosetextout($xmlfile);
+        if (
+            // if filter is set to enabled: supress disabled
+            (isset($options['enabled']) && $this->isEnabled() === false)
+            ||
+            // if filter is set to disabled: supress enabled
+            (isset($options['disabled']) && $this->isEnabled() === true) ) {
+
+            $display = false;
+
+        }
+
+        if ($display == true) {
+
+            print $this->obj->name->__toString() . "\n";
+
+            if (isset($options["verbose"])) {
+                $this->verbosetextout($xmlfile);
+            }
+
         }
     }
 

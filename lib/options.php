@@ -11,9 +11,9 @@
 /**
  * Version
  */
-    define("VERSION", "0.3");
+    define("VERSION", "0.4");
 
-$shortopts = "i:ha:vlpust";
+$shortopts = "i:ha:vlpustED";
 $longopts = array(
     "infile:",
     "listaliases",
@@ -25,6 +25,8 @@ $longopts = array(
     "verbose",
     "unused",
     "simplexmlout",
+    "enabled",
+    "disabled",
 );
 $options = getopt($shortopts, $longopts);
 
@@ -51,6 +53,11 @@ function displayHelp() {
     -p, --listpolicies      lists all policies
     -s, --listservices      lists all services
     -t, --listtags          lists all tags
+        
+    options:
+    -v, --verbose           verbose output
+    -E, --enabled           only show enabled policies (= skip disabled policies)
+    -D, --disabled          only show disabled policies (= skip enabled policies)
     
     debug:
     --simplexmlout          print SimpleXML structure 
@@ -98,6 +105,14 @@ if (isset($options["listpolicies"]) || isset($options["p"])) {
 
 if (isset($options["verbose"]) || isset($options["v"])) {
     $options["verbose"] = true;
+}
+
+if (isset($options["enabled"]) || isset($options["E"])) {
+    $options["enabled"] = true;
+}
+
+if (isset($options["disabled"]) || isset($options["D"])) {
+    $options["disabled"] = true;
 }
 
 if (isset($options["unused"]) || isset($options["u"])) {
