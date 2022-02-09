@@ -58,6 +58,7 @@ function displayHelp() {
     -v, --verbose           verbose output
     -E, --enabled           only show enabled policies (= skip disabled policies)
     -D, --disabled          only show disabled policies (= skip enabled policies)
+    -N, --nospace           change spaces to dots in policy name output
     
     debug:
     --simplexmlout          print SimpleXML structure 
