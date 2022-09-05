@@ -179,7 +179,7 @@ class WatchGuardPolicy extends WatchGuardObject
 
         if ($display == true) {
 
-            print $this->obj->name->__toString() . "\n";
+            print preg_replace("/ /", ".", $this->obj->name->__toString()) . "\n";
 
             if (isset($options["verbose"])) {
                 $this->verbosetextout($xmlfile);
