@@ -15,6 +15,7 @@
 namespace BOC;
 
 // use BOC\WatchGuardAlias;
+use BOC\WatchGuardObject;
 use SimpleXMLElement;
 
 /**
@@ -367,5 +368,13 @@ class WatchGuardXMLFile
         } else {
             displayHelpAndError("alias '$aliasname' not found.");
         }
+    }
+
+    public function printInfo() {
+        printf("\nXML-file Info\n\n");
+        $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
+        printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->getAlgorithm(). ' (' . $multiwan->getAlgorithmText() . ')');
+
+        printf("\n\n");
     }
 }

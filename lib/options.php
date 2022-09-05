@@ -13,7 +13,7 @@
  */
     define("VERSION", "0.4");
 
-$shortopts = "i:ha:vlpustED";
+$shortopts = "i:ha:vlpustEDI";
 $longopts = array(
     "infile:",
     "listaliases",
@@ -27,6 +27,7 @@ $longopts = array(
     "simplexmlout",
     "enabled",
     "disabled",
+    "info",
 );
 $options = getopt($shortopts, $longopts);
 
@@ -118,6 +119,11 @@ if (isset($options["disabled"]) || isset($options["D"])) {
 if (isset($options["unused"]) || isset($options["u"])) {
     $options["unused"] = true;
 }
+
+if (isset($options["info"]) || isset($options["I"])) {
+    $options["info"] = true;
+}
+
 
 $xmlfile = "";
 if (isset($options["infile"]) || isset($options["i"])) {

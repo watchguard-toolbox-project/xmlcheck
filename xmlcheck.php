@@ -62,3 +62,8 @@ if (isset($options["alias"]) || isset($options["a"])) {
         print "\n";
     }
 }
+
+if (isset($options["info"])) {
+    $policyxml->printInfo();
+}
+
