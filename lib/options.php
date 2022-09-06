@@ -55,6 +55,8 @@ function displayHelp() {
     -p, --listpolicies      lists all policies
     -s, --listservices      lists all services
     -t, --listtags          lists all tags
+    -I, --info              lists general info
+    -W, --warnings          lists warnings (differences to best practice)
         
     options:
     -v, --verbose           verbose output
