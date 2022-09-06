@@ -38,7 +38,7 @@ class WatchGuardSSO extends WatchGuardObject
     }
     public function getSSOAgents(){
         $tmp="";
-        $lObject=json_decode(json_encode($this->obj));
+        // $lObject=json_decode(json_encode($this->obj));
 
         /*
         if ($this->isEnabled()==1) {
@@ -50,11 +50,18 @@ class WatchGuardSSO extends WatchGuardObject
         }
         */
 
-        error_reporting(E_ALL);
         if ($this->isEnabled()==1) {
-            foreach ($this->obj->{'agent-list'}->{'agent'} as $agent) {
-                if ($tmp!="") $tmp = $tmp . ",";
-                $tmp .= $agent->{'ip-addr'}->__toString();
+            // agent can be array of agent-objects or single agent-object :(
+
+            if (isset($this->obj->{'agent-list'}->{'agent'}{'ip-addr'})) {
+                // single object ... direct access
+                $tmp .= $this->obj->{'agent-list'}->{'agent'}->{'ip-addr'}->__toString();
+            } else {
+                // array... loop over.
+                foreach ($this->obj->{'agent-list'}->{'agent'} as $agent) {
+                    if ($tmp != "") $tmp = $tmp . ",";
+                    $tmp .= $agent->{'ip-addr'}->__toString();
+                }
             }
         }
 
