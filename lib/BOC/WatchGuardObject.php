@@ -111,5 +111,13 @@ class WatchGuardObject
         }
     }
 
+    /**
+     * print object as debug output
+     * @return void
+     */
+    public function debug(){
+        print_r($this->obj);
+    }
+
 }
 
