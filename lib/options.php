@@ -13,7 +13,7 @@
  */
     define("VERSION", "0.4");
 
-$shortopts = "i:ha:vlpustEDI";
+$shortopts = "i:ha:vlpustEDIW";
 $longopts = array(
     "infile:",
     "listaliases",
@@ -28,6 +28,7 @@ $longopts = array(
     "enabled",
     "disabled",
     "info",
+    "warnings",
 );
 $options = getopt($shortopts, $longopts);
 
@@ -122,6 +123,10 @@ if (isset($options["unused"]) || isset($options["u"])) {
 
 if (isset($options["info"]) || isset($options["I"])) {
     $options["info"] = true;
+}
+
+if (isset($options["warnings"]) || isset($options["W"])) {
+    $options["warnings"] = true;
 }
 
 

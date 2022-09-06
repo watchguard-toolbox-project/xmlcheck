@@ -394,4 +394,37 @@ class WatchGuardXMLFile
 
         printf("\n\n");
     }
+
+    public function printWarnings() {
+
+        $warnings = 0;
+        $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
+        $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
+        $misc = new WatchGuardMiscSettings($this->xmlfile->{'system-parameters'}->{'misc-global-setting'});
+
+        printf("\nXML-file Warnings\n\n");
+        if ($misc->getAutoOrder()==0) {
+            printf("%-30s%-49s\n", "Auto-Order:", $misc->getAutoOrder());
+            $warnings++;
+        }
+
+        if (!in_array($multiwan->getAlgorithm(), array("0","2"))) {
+            printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->getAlgorithm(). ' (' . $multiwan->getAlgorithmText() . ')');
+            $warnings++;
+        }
+
+        if ($misc->getMTUProbing()!=2) {
+            printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->MTUProbing());
+            $warnings++;
+        }
+
+        if ($misc->getAutoReboot()==1) {
+            printf("%-30s%-49s\n", "Auto-Reboot:", $misc->getAutoReboot());
+            $warnings++;
+        }
+
+        printf("\nSumnary:\n");
+        printf("%-30s%-49s\n", "Total Warnings:", $warnings);
+        printf("\n\n");
+    }
 }

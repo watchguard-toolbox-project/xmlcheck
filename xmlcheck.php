@@ -67,3 +67,6 @@ if (isset($options["info"])) {
     $policyxml->printInfo();
 }
 
+if (isset($options["warnings"])) {
+    $policyxml->printWarnings();
+}
