@@ -30,9 +30,6 @@ class WatchGuardSSO extends WatchGuardObject
         parent::__construct($element);
     }
 
-    public function debug(){
-        print_r($this->obj);
-    }
     public function isEnabled(){
         return ($this->obj->{'enabled'}->__toString());
     }
