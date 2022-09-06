@@ -371,9 +371,14 @@ class WatchGuardXMLFile
     }
 
     public function printInfo() {
-        printf("\nXML-file Info\n\n");
+
         $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
+        $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
+        $sso->debug();
+
+        printf("\nXML-file Info\n\n");
         printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->getAlgorithm(). ' (' . $multiwan->getAlgorithmText() . ')');
+        printf("%-30s%-49s\n", "SSO-Settings:", $sso->isEnabled() . ' ' .  $sso->getSSOAgents());
 
         printf("\n\n");
     }
