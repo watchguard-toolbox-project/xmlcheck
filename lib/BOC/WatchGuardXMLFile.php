@@ -15,6 +15,7 @@
 namespace BOC;
 
 // use BOC\WatchGuardAlias;
+use BOC\WatchGuardObject;
 use SimpleXMLElement;
 
 /**
@@ -367,5 +368,63 @@ class WatchGuardXMLFile
         } else {
             displayHelpAndError("alias '$aliasname' not found.");
         }
+    }
+
+    public function printInfo() {
+
+        $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
+        $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
+        $misc = new WatchGuardMiscSettings($this->xmlfile->{'system-parameters'}->{'misc-global-setting'});
+        // $sso->debug();
+
+        printf("\nXML-file Info\n\n");
+        printf("%-30s%-49s\n", "Auto-Order:", $misc->getAutoOrder());
+
+        printf("\nNetworking:\n");
+        printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->getAlgorithm(). ' (' . $multiwan->getAlgorithmText() . ')');
+        printf("%-30s%-49s\n", "MTU-Probing:", $misc->getMTUProbing());
+        printf("%-30s%-49s\n", "Auto-Reboot:", $misc->getAutoReboot());
+        printf("%-30s%-49s\n", "QoS:", $misc->getQoS());
+        printf("%-30s%-49s\n", "BlockSpoofedPackets:", $misc->getBlockSpoofEnabled());
+        printf("%-30s%-49s\n", "SynCheckingEnabled:", $misc->getSynChecking());
+        printf("%-30s%-49s\n", "VLAN-Forwarding:", $misc->getVlanForward());
+
+        printf("\nOther:\n");
+        printf("%-30s%-49s\n", "SSO-Settings:", $sso->isEnabled() . ' ' .  $sso->getSSOAgents());
+
+        printf("\n\n");
+    }
+
+    public function printWarnings() {
+
+        $warnings = 0;
+        $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
+        $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
+        $misc = new WatchGuardMiscSettings($this->xmlfile->{'system-parameters'}->{'misc-global-setting'});
+
+        printf("\nXML-file Warnings\n\n");
+        if ($misc->getAutoOrder()==0) {
+            printf("%-30s%-49s\n", "Auto-Order:", $misc->getAutoOrder());
+            $warnings++;
+        }
+
+        if (!in_array($multiwan->getAlgorithm(), array("0","2"))) {
+            printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->getAlgorithm(). ' (' . $multiwan->getAlgorithmText() . ')');
+            $warnings++;
+        }
+
+        if ($misc->getMTUProbing()!=2) {
+            printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->MTUProbing());
+            $warnings++;
+        }
+
+        if ($misc->getAutoReboot()==1) {
+            printf("%-30s%-49s\n", "Auto-Reboot:", $misc->getAutoReboot());
+            $warnings++;
+        }
+
+        printf("\nSumnary:\n");
+        printf("%-30s%-49s\n", "Total Warnings:", $warnings);
+        printf("\n\n");
     }
 }
