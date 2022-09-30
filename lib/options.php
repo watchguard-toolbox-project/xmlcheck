@@ -11,9 +11,9 @@
 /**
  * Version
  */
-    define("VERSION", "0.4");
+    define("VERSION", "0.5");
 
-$shortopts = "i:f:ha:vlpustEDIW";
+$shortopts = "i:f:ha:vlpustEDIWV";
 $longopts = array(
     "infile:",
     "file:",
@@ -21,7 +21,9 @@ $longopts = array(
     "listpolicies",
     "listservices",
     "listtype",
-    "filtertype:",
+    "filter-type:",
+    "filter-to:",
+    "filter-from:",
     "listtags",
     "alias:",
     "help",
@@ -32,19 +34,28 @@ $longopts = array(
     "disabled",
     "info",
     "warnings",
+    "version",
 );
 $options = getopt($shortopts, $longopts);
 
+/**
+ * displays version
+ *
+ */
+function displayVersion()
+{
+    print "\n\n    xmlcheck v" . VERSION . "\n\n";
+}
 // show help
 /**
  * displays help text.
  *
  */
 function displayHelp() {
+
+    displayVersion();
+
     print "
-    
-    xmlcheck v" . VERSION . "
-    
     Usage: 
     ./xmlcheck.php args|commands
 
@@ -63,10 +74,18 @@ function displayHelp() {
     -I, --info              lists general info
     -W, --warnings          lists warnings (differences to best practice)
         
-    parameters:
-    --filtertype type       only show policies having type, 
-                            needs --listtype, may be used multiple times
-    
+    filters:
+    these filters need --listtype, may be used multiple times and together.
+    --filter-type type       only show policies having type 
+    --filter-to   alias      only show policies using alias in to
+    --filter-from alias      only show policies using alias in from
+    example: 
+        --listpolicies
+        --filter-type HTTPS --filter-to Any-External \
+        --filter-from Any-Trusted --filter-from Any-Optional
+    will display policies
+        of type HTTPS from (Any-Trusted or Any-Optional) to Any-External
+            
     options:
     -v, --verbose           verbose output
     -E, --enabled           only show enabled policies (= skip disabled policies)
@@ -93,62 +112,134 @@ function displayHelpAndExit() {
  *
  * @param $error    string
  */
+function displayError($error) {
+    print "\nerror: $error\n\n";
+}
+
+/**
+ * displays help text and error string
+ *
+ * @param $error    string
+ */
 function displayHelpAndError($error) {
     displayHelp();
-    print "\nerror: $error\n\n";
+    displayError($error);
+    exit;
 }
 
 if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
     displayHelpAndExit();
 }
 
+if (isset($options["version"]) || isset($options["V"])) {
+    displayVersion();
+    exit;
+}
+
+$optcount=0;
+$myopts=[];
+
 if (isset($options["listservices"]) || isset($options["s"])
     || isset($options["listtype"])) {
     $options["listservices"] = true;
+    $optcount++;
+    $myopts[]="--list-type";
 }
 
 if (isset($options["listtags"]) || isset($options["t"])) {
     $options["listtags"] = true;
+    $optcount++;
+    $myopts[]="--list-tags";
 }
 
 if (isset($options["listaliases"]) || isset($options["l"])) {
-    $options["listaliases"] = true;
+    $options["--listaliases"] = true;
+    $optcount++;
+    $myopts[]="--list-aliases";
 }
 
 if (isset($options["listpolicies"]) || isset($options["p"])) {
     $options["listpolicies"] = true;
+    $optcount++;
+    $myopts[]="--list-policies";
 }
 
 if (isset($options["verbose"]) || isset($options["v"])) {
     $options["verbose"] = true;
+    $optcount++;
+    $myopts[]="--verbose";
 }
 
 if (isset($options["enabled"]) || isset($options["E"])) {
     $options["enabled"] = true;
+    $optcount++;
+    $myopts[]="--enabled";
 }
 
 if (isset($options["disabled"]) || isset($options["D"])) {
     $options["disabled"] = true;
+    $optcount++;
+    $myopts[]="--disabled";
 }
 
 if (isset($options["unused"]) || isset($options["u"])) {
     $options["unused"] = true;
+    $optcount++;
+    $myopts[]="--unused";
 }
 
 if (isset($options["info"]) || isset($options["I"])) {
     $options["info"] = true;
+    $optcount++;
+    $myopts[]="--info";
 }
 
 if (isset($options["warnings"]) || isset($options["W"])) {
     $options["warnings"] = true;
+    $optcount++;
+    $myopts[]="--warnings";
 }
 
-if (isset($options["filtertype"])) {
+if (isset($options["filter-type"])) {
     $filtertype=[];
-    if (is_array($options['filtertype'])) {
-        $filtertype=$options['filtertype'];
+    if (is_array($options['filter-type'])) {
+        $filtertype=$options['filter-type'];
+        $optcount+= (2* count($filtertype));
     } else {
-        $filtertype[]=$options['filtertype'];
+        $filtertype[]=$options['filter-type'];
+        $optcount+=2;
+    }
+    foreach($filtertype as $filter) {
+        $myopts[]="--filter-type";
+        $myopts[]=$filter;
+    }
+}
+if (isset($options["filter-from"])) {
+    $filterfrom=[];
+    if (is_array($options['filter-from'])) {
+        $filterfrom=$options['filter-from'];
+        $optcount+= 2* count($filterfrom);
+    } else {
+        $filterfrom[]=$options['filter-from'];
+        $optcount+=2;
+    }
+    foreach($filterfrom as $filter) {
+        $myopts[]="--filter-from";
+        $myopts[]=$filter;
+    }
+}
+if (isset($options["filter-to"])) {
+    $filterto=[];
+    if (is_array($options['filter-to'])) {
+        $filterto=$options['filter-to'];
+        $optcount+= 2* count($filterto);
+    } else {
+        $filterto[]=$options['filter-to'];
+        $optcount+=2;
+    }
+    foreach($filterto as $filter) {
+        $myopts[]="--filter-to";
+        $myopts[]=$filter;
     }
 }
 
@@ -172,15 +263,19 @@ if (   isset($options["infile"]) || isset($options["i"])
         displayHelpAndError("file '$xmlfile' not found.");
         exit;
     }
+    $optcount+=2;
+    $myopts[]="--file";
+    $myopts[]=$xmlfile;
 }
+
 
 if ($xmlfile === "") {
     displayHelpAndError("no input file.");
     exit;
 }
 
-if ((is_array($filtertype)) && ! isset($options['listpolicies'])) {
-    displayHelpAndError("--filtertype needs --listpolicies.");
+if (isset($filtertype) && is_array($filtertype) && !isset($options['listpolicies'])) {
+    displayError("--filter-type needs --listpolicies.");
     exit;
 }
 // check if too much actions:
@@ -194,6 +289,27 @@ if (isset($options['info'])) $actions++;
 if (isset($options['warnings'])) $actions++;
 
 if ($actions>1) {
-    displayHelpAndError("only 1 (one) action may be used.");
+    displayError("only 1 (one) action may be used.");
+    exit;
+}
+
+// sanity check if all options have been read.
+
+if (count($argv) != $optcount +1 ) {
+    displayError("at least on option has not been recognized by getopt.");
+    $opts=$argv;
+    for ($var=0; $var<=$optcount; $var++) {
+        array_shift($opts);
+    }
+    print "error supposed to be in: " . $opts[0] . "\n\n";
+
+    print "\nall arguments:\n";
+    array_shift($argv);
+    print_r($argv);
+    print "\nparsed arguments:\n";
+    print_r($myopts);
+    print "\nunparsed arguments:\n";
+    print_r($opts);
+    print "\n";
     exit;
 }
