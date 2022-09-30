@@ -113,6 +113,34 @@ class WatchGuardPolicy extends WatchGuardObject
     }
 
     /**
+     * retrieves the alias into the aliasesTo array.
+     * @return array
+     */
+    public function getAliasesTo()
+    {
+        $to = $this->aliasesTo;
+        if (is_array($to) && isset($to[0]) && preg_match("/\.1\.(to|from)/", $to[0])) {
+            // remove pseudo-alias policy-name.1.to; policy-name.1.to
+            array_shift($to);
+        }
+        return $to;
+    }
+
+    /**
+     * retrieves the alias into the aliasesFrom array.
+     * @return array
+     */
+    public function getAliasesFrom()
+    {
+        $from = $this->aliasesFrom;
+        if (is_array($from) && isset($from[0]) && preg_match("/\.1\.(to|from)/", $from[0])) {
+            // remove pseudo-alias policy-name.1.to; policy-name.1.from
+            array_shift($from);
+        }
+        return $from;
+    }
+
+    /**
      * returns the name of the service of this policy
      * @return string
      */
@@ -145,8 +173,8 @@ class WatchGuardPolicy extends WatchGuardObject
 
         if (isset($options['verbose'])) {
 
-            $fromAliases = implode(', ', $this->aliasesFrom);
-            $toAliases   = implode(', ', $this->aliasesTo);
+            $fromAliases = implode(', ', $this->getAliasesFrom());
+            $toAliases   = implode(', ', $this->getAliasesTo());
 
             print "  From   : " . $fromAliases . "\n";
             print "  To     : " . $toAliases . "\n";
