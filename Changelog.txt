@@ -1,5 +1,18 @@
 xmlcheck.php - Changelog
 ------------------------
+v0.6
+----
+    * added "--filter-to"
+    * added "--filter-from"
+    * added "--filter-action"
+    * added "--filter-type"
+    * added getopt-sanity checks against typos and improved error messages
+
+v0.5
+----
+    * started --warnings
+    * started --info
+    * fixed SSO check
 
 v0.4
 ----

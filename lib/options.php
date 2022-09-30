@@ -5,13 +5,13 @@
  * also helptext is defined here.
  *
  * @author       Werner Maier <wm@boc.de>
- * @copyright    (C) 2019 BOC IT-Security GmbH
+ * @copyright    (C) 2019-2022 BOC IT-Security GmbH
  */
 
 /**
  * Version
  */
-    define("VERSION", "0.5");
+    define("VERSION", "0.6");
 
 $shortopts = "i:f:ha:vlpustEDIWV";
 $longopts = array(
