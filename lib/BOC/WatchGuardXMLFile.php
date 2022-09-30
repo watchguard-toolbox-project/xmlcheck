@@ -42,6 +42,11 @@ class WatchGuardXMLFile
      */
     private $allPolicies;
     /**
+     * array for policiesTypeFilter from this xmlfile
+     * @var array
+     */
+    private $policyTypeFilter;
+    /**
      * array for all services from this xmlfile
      * @var array
      */
@@ -247,6 +252,22 @@ class WatchGuardXMLFile
     }
 
     /**
+     * @return array
+     */
+    public function getPolicyTypeFilter()
+    {
+        return $this->policyTypeFilter;
+    }
+
+    /**
+     * @param array $policyTypeFilter
+     */
+    public function setPolicyTypeFilter($policyTypeFilter)
+    {
+        $this->policyTypeFilter = $policyTypeFilter;
+    }
+
+    /**
      * stores policy references to alias objects
      */
     public function findAliasRefByPolicy() {
@@ -336,7 +357,15 @@ class WatchGuardXMLFile
      */
     public function listAllPolicies() {
         foreach ($this->allPolicies as $policyName => $policy) {
-            $policy->textout($this);
+            $display=true;
+            if (is_array($this->policyTypeFilter)) {
+                if (!in_array($policy->getService(), $this->policyTypeFilter)) {
+                    $display=false;
+                }
+            }
+            if ($display==true) {
+                $policy->textout($this);
+            }
         }
     }
 
