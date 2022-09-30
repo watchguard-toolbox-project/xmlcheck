@@ -24,6 +24,7 @@ $longopts = array(
     "filter-type:",
     "filter-to:",
     "filter-from:",
+    "filter-action:",
     "listtags",
     "alias:",
     "help",
@@ -79,6 +80,7 @@ function displayHelp() {
     --filter-type type       only show policies having type 
     --filter-to   alias      only show policies using alias in to
     --filter-from alias      only show policies using alias in from
+    --filter-action action   only show policies using action (Deny|Allow)
     example: 
         --listpolicies
         --filter-type HTTPS --filter-to Any-External \
@@ -240,6 +242,16 @@ if (isset($options["filter-to"])) {
     foreach($filterto as $filter) {
         $myopts[]="--filter-to";
         $myopts[]=$filter;
+    }
+}
+
+if (isset($options["filter-action"])) {
+    if (is_array($options['filter-action'])) {
+        displayError("filter-action may only be used once.");
+        exit;
+    } else {
+        $filteraction=$options['filter-action'];
+        $optcount+=2;
     }
 }
 

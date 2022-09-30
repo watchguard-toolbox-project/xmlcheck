@@ -42,10 +42,25 @@ class WatchGuardXMLFile
      */
     private $allPolicies;
     /**
-     * array for policiesTypeFilter from this xmlfile
+     * array for filter-type
      * @var array
      */
     private $policyTypeFilter;
+    /**
+     * array for filter-from
+     * @var array
+     */
+    private $policyFromFilter;
+    /**
+     * array for filter-to
+     * @var array
+     */
+    private $policyToFilter;
+    /**
+     * string for filter-action (deny/allow)
+     * @var string
+     */
+    private $policyActionFilter;
     /**
      * array for all services from this xmlfile
      * @var array
@@ -252,6 +267,14 @@ class WatchGuardXMLFile
     }
 
     /**
+     * @param string $policyActionFilter
+     */
+    public function setPolicyActionFilter($policyActionFilter)
+    {
+        $this->policyActionFilter = $policyActionFilter;
+    }
+
+    /**
      * @return array
      */
     public function getPolicyTypeFilter()
@@ -265,6 +288,38 @@ class WatchGuardXMLFile
     public function setPolicyTypeFilter($policyTypeFilter)
     {
         $this->policyTypeFilter = $policyTypeFilter;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPolicyFromFilter()
+    {
+        return $this->policyFromFilter;
+    }
+
+    /**
+     * @param array $policyFromFilter
+     */
+    public function setPolicyFromFilter($policyFromFilter)
+    {
+        $this->policyFromFilter = $policyFromFilter;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPolicyToFilter()
+    {
+        return $this->policyToFilter;
+    }
+
+    /**
+     * @param array $policyToFilter
+     */
+    public function setPolicyToFilter($policyToFilter)
+    {
+        $this->policyToFilter = $policyToFilter;
     }
 
     /**
@@ -356,13 +411,50 @@ class WatchGuardXMLFile
      * lists (all) policies in this xmlfile
      */
     public function listAllPolicies() {
+
         foreach ($this->allPolicies as $policyName => $policy) {
+            /* @var WatchGuardPolicy $policy */
             $display=true;
             if (is_array($this->policyTypeFilter)) {
+                // suppress output if type not in typefilter
                 if (!in_array($policy->getService(), $this->policyTypeFilter)) {
                     $display=false;
                 }
             }
+
+            if (isset($this->policyActionFilter)) {
+                // suppress output if type not in typefilter
+                if ($policy->getAction() != $this->policyActionFilter) {
+                    $display=false;
+                }
+            }
+
+            if (is_array($this->policyToFilter)) {
+                // suppress output if none of all To aliases match filter-to
+                $found = false;
+                foreach ($policy->getAliasesTo() as $alias) {
+                    if (in_array($alias, $this->policyToFilter)) {
+                        $found = true;
+                    };
+                }
+                if ($found == false) {
+                    $display = false;
+                }
+            }
+
+            if (is_array($this->policyFromFilter)) {
+                $found = false;
+                // suppress output if none of all From aliases match filter-from
+                foreach ($policy->getAliasesFrom() as $alias) {
+                    if (in_array($alias, $this->policyFromFilter)) {
+                        $found = true;
+                    };
+                }
+                if ($found == false) {
+                    $display = false;
+                }
+            }
+
             if ($display==true) {
                 $policy->textout($this);
             }

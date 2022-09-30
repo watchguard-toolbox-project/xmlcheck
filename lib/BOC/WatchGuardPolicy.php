@@ -153,6 +153,24 @@ class WatchGuardPolicy extends WatchGuardObject
     }
 
     /**
+     * @return string Allow|Deny
+     */
+    public function getAction() {
+        switch($this->obj->firewall->__toString()) {
+            case "1":
+                $ret = "Allow";
+                break;
+            case "2":
+                $ret = "Deny";
+                break;
+            default:
+                $ret = "???" . $this->obj->firewall->__toString() . "???";
+                break;
+        }
+        return $ret;
+    }
+
+    /**
      * returns the enable/disable state of this policy
      * @return bool
      */
@@ -184,6 +202,7 @@ class WatchGuardPolicy extends WatchGuardObject
             print "  To     : " . $toAliases . "\n";
             print "  Service: " . $this->getService() . "\n";
             print "  Enabled: " . ($this->isEnabled() === true ? "yes" : "no") . "\n";
+            print "  Action : " . $this->getAction() . "\n";
         }
 
         print "\n";
