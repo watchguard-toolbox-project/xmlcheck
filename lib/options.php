@@ -20,6 +20,8 @@ $longopts = array(
     "listaliases",
     "listpolicies",
     "listservices",
+    "listtype",
+    "filtertype:",
     "listtags",
     "alias:",
     "help",
@@ -48,6 +50,7 @@ function displayHelp() {
 
     -h, --help              this help file
     -i, --infile filename   inputfile filename
+    -f, --file filename     inputfile filename
 
     commands:
     -a aliasname, 
@@ -55,15 +58,21 @@ function displayHelp() {
     -l, --listaliases       lists all aliases
     -p, --listpolicies      lists all policies
     -s, --listservices      lists all services
+        --listtype          lists all services
     -t, --listtags          lists all tags
     -I, --info              lists general info
     -W, --warnings          lists warnings (differences to best practice)
         
+    parameters:
+    --filtertype type       only show policies having type, 
+                            needs --listtype, may be used multiple times
+    
     options:
     -v, --verbose           verbose output
     -E, --enabled           only show enabled policies (= skip disabled policies)
     -D, --disabled          only show disabled policies (= skip enabled policies)
     -N, --nospace           change spaces to dots in policy name output
+    -u, --unused            only show unused (aliases/tags/etc.)
     
     debug:
     --simplexmlout          print SimpleXML structure 
@@ -93,7 +102,8 @@ if (isset($options["help"]) || isset($options["h"]) || count($options) == 0) {
     displayHelpAndExit();
 }
 
-if (isset($options["listservices"]) || isset($options["s"])) {
+if (isset($options["listservices"]) || isset($options["s"])
+    || isset($options["listtype"])) {
     $options["listservices"] = true;
 }
 
@@ -133,6 +143,15 @@ if (isset($options["warnings"]) || isset($options["W"])) {
     $options["warnings"] = true;
 }
 
+if (isset($options["filtertype"])) {
+    $filtertype=[];
+    if (is_array($options['filtertype'])) {
+        $filtertype=$options['filtertype'];
+    } else {
+        $filtertype[]=$options['filtertype'];
+    }
+}
+
 
 $xmlfile = "";
 if (   isset($options["infile"]) || isset($options["i"])
@@ -160,3 +179,21 @@ if ($xmlfile === "") {
     exit;
 }
 
+if ((is_array($filtertype)) && ! isset($options['listpolicies'])) {
+    displayHelpAndError("--filtertype needs --listpolicies.");
+    exit;
+}
+// check if too much actions:
+$actions = 0;
+if (isset($options['listservices']) || isset($options['listtype'])) $actions++;
+if (isset($options['listpolicies'])) $actions++;
+if (isset($options['listtags'])) $actions++;
+if (isset($options['listaliases'])) $actions++;
+if (isset($options['alias'])) $actions++;
+if (isset($options['info'])) $actions++;
+if (isset($options['warnings'])) $actions++;
+
+if ($actions>1) {
+    displayHelpAndError("only 1 (one) action may be used.");
+    exit;
+}
