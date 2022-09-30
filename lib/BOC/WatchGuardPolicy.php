@@ -119,9 +119,11 @@ class WatchGuardPolicy extends WatchGuardObject
     public function getAliasesTo()
     {
         $to = $this->aliasesTo;
-        if (is_array($to) && isset($to[0]) && preg_match("/\.1\.(to|from)/", $to[0])) {
-            // remove pseudo-alias policy-name.1.to; policy-name.1.to
-            array_shift($to);
+        if (is_array($to) && isset($to[0])) {
+            if (preg_match("/\.1\.(to|from)/", $to[0])) {
+                // remove pseudo-alias policy-name.1.to; policy-name.1.to
+                array_shift($to);
+            }
         }
         return $to;
     }
@@ -133,9 +135,11 @@ class WatchGuardPolicy extends WatchGuardObject
     public function getAliasesFrom()
     {
         $from = $this->aliasesFrom;
-        if (is_array($from) && isset($from[0]) && preg_match("/\.1\.(to|from)/", $from[0])) {
-            // remove pseudo-alias policy-name.1.to; policy-name.1.from
-            array_shift($from);
+        if (is_array($from) && isset($from[0])) {
+            if (preg_match("/\.1\.(to|from)/", $from[0])) {
+                // remove pseudo-alias policy-name.1.to; policy-name.1.from
+                array_shift($from);
+            }
         }
         return $from;
     }
