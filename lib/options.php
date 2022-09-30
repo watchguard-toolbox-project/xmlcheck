@@ -13,9 +13,10 @@
  */
     define("VERSION", "0.4");
 
-$shortopts = "i:ha:vlpustEDIW";
+$shortopts = "i:f:ha:vlpustEDIW";
 $longopts = array(
     "infile:",
+    "file:",
     "listaliases",
     "listpolicies",
     "listservices",
@@ -134,8 +135,14 @@ if (isset($options["warnings"]) || isset($options["W"])) {
 
 
 $xmlfile = "";
-if (isset($options["infile"]) || isset($options["i"])) {
-    $xmlfile = isset($options["i"]) ? $options["i"] : $options["infile"];
+if (   isset($options["infile"]) || isset($options["i"])
+    || isset($options["file"]) || isset($options["f"])    ) {
+
+    if (isset($options["i"])) $xmlfile = $options["i"];
+    if (isset($options["infile"])) $xmlfile = $options["infile"];
+    if (isset($options["f"])) $xmlfile = $options["f"];
+    if (isset($options["file"])) $xmlfile = $options["file"];
+
     if (is_array($xmlfile)) {
         displayHelpAndError("-i accepts only ONE file argument.");
         print "hint: problem might be with this option: '" . $xmlfile[1] .
