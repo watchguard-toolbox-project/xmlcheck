@@ -429,28 +429,31 @@ class WatchGuardXMLFile
                 }
             }
 
+            $foundto = false;
             if (is_array($this->policyToFilter)) {
                 // suppress output if none of all To aliases match filter-to
-                $found = false;
                 foreach ($policy->getAliasesTo() as $alias) {
                     if (in_array($alias, $this->policyToFilter)) {
-                        $found = true;
+                        $foundto = true;
                     };
-                }
-                if ($found == false) {
-                    $display = false;
                 }
             }
 
+            $foundfrom = false;
             if (is_array($this->policyFromFilter)) {
-                $found = false;
                 // suppress output if none of all From aliases match filter-from
                 foreach ($policy->getAliasesFrom() as $alias) {
                     if (in_array($alias, $this->policyFromFilter)) {
-                        $found = true;
+                        $foundfrom = true;
                     };
                 }
-                if ($found == false) {
+            }
+            if (is_array($this->policyFromFilter) && is_array($this->policyToFilter)) {
+                if (!($foundfrom && $foundto)) {
+                    $display=false;
+                }
+            } elseif (is_array($this->policyFromFilter) || is_array($this->policyToFilter)) {
+                if (!($foundfrom || $foundto)) {
                     $display = false;
                 }
             }
