@@ -30,6 +30,7 @@ $longopts = array(
     "filter-to:",
     "filter-from:",
     "filter-action:",
+    "filter-exclude-type:",
     "alias:",
     "help",
     "verbose",
@@ -218,6 +219,22 @@ if (isset($options["filter-type"])) {
         $myopts[]=$filter;
     }
 }
+
+if (isset($options["filter-exclude-type"])) {
+    $filterexcludetype=[];
+    if (is_array($options['filter-exclude-type'])) {
+        $filterexcludetype=$options['filter-exclude-type'];
+        $optcount+= (2* count($filterexcludetype));
+    } else {
+        $filterexcludetype[]=$options['filter-exclude-type'];
+        $optcount+=2;
+    }
+    foreach($filterexcludetype as $filter) {
+        $myopts[]="--filter-exclude-type";
+        $myopts[]=$filter;
+    }
+}
+
 if (isset($options["filter-from"])) {
     $filterfrom=[];
     if (is_array($options['filter-from'])) {
