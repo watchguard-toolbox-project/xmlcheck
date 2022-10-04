@@ -226,8 +226,11 @@ class WatchGuardPolicy extends WatchGuardObject
 
             $display = false;
         }
-        if (in_array($this->getService(), $xmlfile->getPolicyExcludeTypeFilter())) {
-            $display = false;
+
+        if (count($xmlfile->getPolicyExcludeTypeFilter()>0)) {
+            if (in_array($this->getService(), $xmlfile->getPolicyExcludeTypeFilter())) {
+                $display = false;
+            }
         }
 
         if ($display == true) {
