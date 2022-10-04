@@ -16,6 +16,8 @@ use SimpleXMLElement;
 class WatchGuardService extends WatchGuardObject
 {
 
+    private $serviceItems;
+    private $servicePorts;
     /**
      * WatchGuardService constructor.
      * @param SimpleXMLElement $element
@@ -141,6 +143,90 @@ class WatchGuardService extends WatchGuardObject
             // Services is WatchGuard default
             $this->storeReference("WatchGuard Default","service");
         }
+
+        foreach ($this->obj->{'service-item'}->children() as $member) {
+            $this->serviceItems[] = $member;
+
+            switch ($member->{'protocol'}->__toString()) {
+                case "0":
+                    $protocol = "Any";
+                    break;
+                case "1":
+                    $protocol = "icmp";
+                    break;
+                case "2":
+                    $protocol = "igmp";
+                    break;
+                case "58":
+                    $protocol = "icmpv6";
+                    break;
+                case "6":
+                    $protocol = "tcp";
+                    break;
+                case "17":
+                    $protocol = "udp";
+                    break;
+                case "47":
+                    $protocol = "gre";
+                    break;
+                case "50":
+                    $protocol = "esp";
+                    break;
+                case "51":
+                    $protocol = "ah";
+                    break;
+                case "89":
+                    $protocol = "ospf";
+                    break;
+                case "103":
+                    $protocol = "pim";
+                    break;
+                default:
+                    $protocol = "???";
+                    break;
+            }
+
+            switch ($member->{'type'}->__toString()) {
+                case "1":
+                    switch($protocol) {
+                        case "icmp":
+                        case "icmpv6":
+                            $port = "type " . $member->{'icmp-type'}->__toString() . " " .
+                                    "code " . $member->{'icmp-code'}->__toString();
+                            break;
+                        case "Any":
+                        case "tcp":
+                        case "udp":
+                        case "gre":
+                        case "igmp":
+                        case "ospf":
+                        case "pim":
+                        case "esp":
+                        case "ah":
+                            $port = $member->{'server-port'}->__toString();
+                            break;
+                        default:
+                            $port = "1??? " . json_encode($member);
+                            break;
+                    }
+                    break;
+                case "2":
+                    switch($protocol) {
+                        case "tcp":
+                        case "udp":
+                            $port = $member->{'start-server-port'}->__toString() . "-". $member->{'start-server-port'}->__toString();
+                        break;
+                        default:
+                            $port = "2??? " . json_encode($member);
+                    }
+                    break;
+                default:
+                    $port = "3??? " . json_encode($member);
+                    break;
+            }
+
+            $this->servicePorts[]="$port/$protocol";
+        }
     }
 
     /**
@@ -152,5 +238,25 @@ class WatchGuardService extends WatchGuardObject
         return $object->property->__toString();
     }
 
+    /**
+     * detailed printout of service information
+     * @param WatchGuardXMLFile $xmlfile
+     */
+    protected function verbosetextout($xmlfile)
+    {
+        global $options;
+
+        if (isset($options['verbose'])) {
+            parent::verbosetextout($xmlfile);
+            $protocol = "???";
+
+            print "  Ports:\n";
+            foreach($this->servicePorts as $port) {
+                print "    $port\n";
+            }
+        }
+
+        print "\n";
+    }
 }
 
