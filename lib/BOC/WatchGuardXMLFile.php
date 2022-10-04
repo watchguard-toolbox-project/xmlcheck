@@ -47,6 +47,11 @@ class WatchGuardXMLFile
      */
     private $policyTypeFilter;
     /**
+     * array for filter-exclude-type
+     * @var array
+     */
+    private $policyExcludeTypeFilter;
+    /**
      * array for filter-from
      * @var array
      */
@@ -272,6 +277,22 @@ class WatchGuardXMLFile
     public function setPolicyActionFilter($policyActionFilter)
     {
         $this->policyActionFilter = $policyActionFilter;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPolicyExcludeTypeFilter()
+    {
+        return $this->policyExcludeTypeFilter;
+    }
+
+    /**
+     * @param array $policyExcludeTypeFilter
+     */
+    public function setPolicyExcludeTypeFilter($policyExcludeTypeFilter)
+    {
+        $this->policyExcludeTypeFilter = $policyExcludeTypeFilter;
     }
 
     /**
