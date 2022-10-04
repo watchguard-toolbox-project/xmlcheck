@@ -60,6 +60,9 @@ if (isset($options["listpolicies"])) {
 }
 
 if (isset($options["listservices"])) {
+    if (isset($filtertype) && is_array($filtertype)) {
+        $policyxml->setPolicyTypeFilter($filtertype);
+    }
     $policyxml->listAllServices();
 }
 
