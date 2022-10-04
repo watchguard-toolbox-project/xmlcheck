@@ -505,7 +505,16 @@ class WatchGuardXMLFile
      */
     public function listAllServices() {
         foreach ($this->allServices as $serviceName => $service) {
-            $service->textout($this);
+            $display=true;
+            if (count($this->policyTypeFilter)>0) {
+                // suppress output if type not in typefilter
+                if (!in_array($serviceName, $this->policyTypeFilter)) {
+                    $display=false;
+                }
+            }
+            if ($display==true) {
+                $service->textout($this);
+            }
         }
     }
 
