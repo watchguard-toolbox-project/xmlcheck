@@ -44,6 +44,9 @@ if (isset($options["listpolicies"])) {
     if (isset($filtertype) && is_array($filtertype)) {
         $policyxml->setPolicyTypeFilter($filtertype);
     }
+    if (isset($filterexcludetype) && is_array($filterexcludetype)) {
+        $policyxml->setPolicyExcludeTypeFilter($filterexcludetype);
+    }
     if (isset($filterfrom) && is_array($filterfrom)) {
         $policyxml->setPolicyFromFilter($filterfrom);
     }
