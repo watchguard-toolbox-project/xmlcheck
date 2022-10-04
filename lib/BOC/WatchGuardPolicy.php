@@ -222,10 +222,12 @@ class WatchGuardPolicy extends WatchGuardObject
             (isset($options['enabled']) && $this->isEnabled() === false)
             ||
             // if filter is set to disabled: supress enabled
-            (isset($options['disabled']) && $this->isEnabled() === true) ) {
+            (isset($options['disabled']) && $this->isEnabled() === true)) {
 
             $display = false;
-
+        }
+        if (in_array($this->getService(), $xmlfile->getPolicyExcludeTypeFilter())) {
+            $display = false;
         }
 
         if ($display == true) {
