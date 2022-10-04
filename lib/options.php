@@ -305,8 +305,8 @@ if ($xmlfile === "") {
     exit;
 }
 
-if (isset($filtertype) && is_array($filtertype) && !isset($options['listpolicies'])) {
-    displayError("--filter-type needs --listpolicies.");
+if (isset($filtertype) && is_array($filtertype) && !isset($options['listpolicies']) && !isset($options['listservices'])) {
+    displayError("--filter-type needs --list-policies or --list-types");
     exit;
 }
 // check if too much actions:
