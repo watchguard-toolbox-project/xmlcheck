@@ -92,6 +92,13 @@ class WatchGuardXMLFile
         $this->allServices = [];
         $this->allTags = [];
 
+        $this->policyActionFilter = [];
+        $this->policyFromFilter = [];
+        $this->policyToFilter = [];
+        $this->policyTypeFilter = [];
+
+        $this->policyExcludeTypeFilter = [];
+
         // initialize aliases, services and tags
         $this->getAllAliases();
         $this->getAllServices();
