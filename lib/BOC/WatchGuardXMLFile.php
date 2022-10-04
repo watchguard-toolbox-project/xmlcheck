@@ -92,7 +92,8 @@ class WatchGuardXMLFile
         $this->allServices = [];
         $this->allTags = [];
 
-        $this->policyActionFilter = [];
+        // initialize filters as arrays
+        // don't initialize policyActionFilter as it is no array.
         $this->policyFromFilter = [];
         $this->policyToFilter = [];
         $this->policyTypeFilter = [];
@@ -443,7 +444,7 @@ class WatchGuardXMLFile
         foreach ($this->allPolicies as $policyName => $policy) {
             /* @var WatchGuardPolicy $policy */
             $display=true;
-            if (is_array($this->policyTypeFilter)) {
+            if (count($this->policyTypeFilter)>0) {
                 // suppress output if type not in typefilter
                 if (!in_array($policy->getService(), $this->policyTypeFilter)) {
                     $display=false;
@@ -458,7 +459,7 @@ class WatchGuardXMLFile
             }
 
             $foundto = false;
-            if (is_array($this->policyToFilter)) {
+            if (count($this->policyToFilter)>0) {
                 // suppress output if none of all To aliases match filter-to
                 foreach ($policy->getAliasesTo() as $alias) {
                     if (in_array($alias, $this->policyToFilter)) {
@@ -466,9 +467,8 @@ class WatchGuardXMLFile
                     };
                 }
             }
-
             $foundfrom = false;
-            if (is_array($this->policyFromFilter)) {
+            if (count($this->policyFromFilter)>0) {
                 // suppress output if none of all From aliases match filter-from
                 foreach ($policy->getAliasesFrom() as $alias) {
                     if (in_array($alias, $this->policyFromFilter)) {
@@ -476,16 +476,15 @@ class WatchGuardXMLFile
                     };
                 }
             }
-            if (is_array($this->policyFromFilter) && is_array($this->policyToFilter)) {
+            if (count($this->policyFromFilter)>0 && count($this->policyToFilter)>0) {
                 if (!($foundfrom && $foundto)) {
                     $display=false;
                 }
-            } elseif (is_array($this->policyFromFilter) || is_array($this->policyToFilter)) {
+            } elseif (count($this->policyFromFilter)>0 || count($this->policyToFilter)>0) {
                 if (!($foundfrom || $foundto)) {
                     $display = false;
                 }
             }
-
             if ($display==true) {
                 $policy->textout($this);
             }
