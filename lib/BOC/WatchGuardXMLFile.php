@@ -52,6 +52,11 @@ class WatchGuardXMLFile
      */
     private $policyExcludeTypeFilter;
     /**
+     * array for filter-port
+     * @var array
+     */
+    private $typePortFilter;
+    /**
      * array for filter-from
      * @var array
      */
@@ -280,6 +285,22 @@ class WatchGuardXMLFile
     }
 
     /**
+     * @return array
+     */
+    public function getTypePortFilter()
+    {
+        return $this->typePortFilter;
+    }
+
+    /**
+     * @param array $typePortFilter
+     */
+    public function setTypePortFilter($typePortFilter)
+    {
+        $this->typePortFilter = $typePortFilter;
+    }
+
+    /**
      * @param string $policyActionFilter
      */
     public function setPolicyActionFilter($policyActionFilter)
@@ -505,10 +526,29 @@ class WatchGuardXMLFile
      */
     public function listAllServices() {
         foreach ($this->allServices as $serviceName => $service) {
+            /** @var WatchGuardService $service */
             $display=true;
             if (count($this->policyTypeFilter)>0) {
                 // suppress output if type not in typefilter
                 if (!in_array($serviceName, $this->policyTypeFilter)) {
+                    $display=false;
+                }
+            }
+            if (count($this->policyExcludeTypeFilter)>0) {
+                // suppress output if type in typeExcludeFilter
+                if (in_array($serviceName, $this->policyExcludeTypeFilter)) {
+                    $display=false;
+                }
+            }
+            if (count($this->typePortFilter)>0) {
+                // suppress output if type not in typefilter
+                $found=false;
+                foreach($service->getServicePorts() as $port) {
+                   if (in_array($port, $this->typePortFilter)) {
+                       $found=true;
+                   }
+                }
+                if ($found==false) {
                     $display=false;
                 }
             }

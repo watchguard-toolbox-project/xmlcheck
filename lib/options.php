@@ -27,6 +27,7 @@ $longopts = array(
     "list-types",
     "list-tags",
     "filter-type:",
+    "filter-port:",
     "filter-to:",
     "filter-from:",
     "filter-action:",
@@ -79,11 +80,16 @@ function displayHelp() {
     --warnings            lists warnings (differences to best practice)
         
     filters:
-    these filters need --listtype, may be used multiple times and together.
+    these filters need --list-policy, may be used multiple times and together.
     --filter-type type       only show policies having type 
     --filter-to   alias      only show policies using alias in to
     --filter-from alias      only show policies using alias in from
     --filter-action action   only show policies using action (Deny|Allow)
+    
+    these filters need --list-type, may be used multiple times and together.
+    --filter-type action     only show types using action (Deny|Allow)
+    --filter-port port       only show types using port (e.g. '25/tcp')
+    
     example: 
         --list-policies
         --filter-type HTTPS --filter-to Any-External \
@@ -235,6 +241,21 @@ if (isset($options["filter-exclude-type"])) {
     }
 }
 
+if (isset($options["filter-port"])) {
+    $filterport=[];
+    if (is_array($options['filter-port'])) {
+        $filterport=$options['filter-port'];
+        $optcount+= (2* count($filterport));
+    } else {
+        $filterport[]=$options['filter-port'];
+        $optcount+=2;
+    }
+    foreach($filterport as $filter) {
+        $myopts[]="--filter-port";
+        $myopts[]=$filter;
+    }
+}
+
 if (isset($options["filter-from"])) {
     $filterfrom=[];
     if (is_array($options['filter-from'])) {
@@ -307,6 +328,10 @@ if ($xmlfile === "") {
 
 if (isset($filtertype) && is_array($filtertype) && !isset($options['listpolicies']) && !isset($options['listservices'])) {
     displayError("--filter-type needs --list-policies or --list-types");
+    exit;
+}
+if (isset($filterport) && is_array($filterport) && !isset($options['listservices'])) {
+    displayError("--filter-port needs --list-types");
     exit;
 }
 // check if too much actions:

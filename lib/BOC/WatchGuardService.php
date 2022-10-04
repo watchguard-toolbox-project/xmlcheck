@@ -258,5 +258,14 @@ class WatchGuardService extends WatchGuardObject
 
         print "\n";
     }
+
+    /**
+     * @return array
+     */
+    public function getServicePorts()
+    {
+        return $this->servicePorts;
+    }
+
 }
 

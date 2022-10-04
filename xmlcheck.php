@@ -63,6 +63,12 @@ if (isset($options["listservices"])) {
     if (isset($filtertype) && is_array($filtertype)) {
         $policyxml->setPolicyTypeFilter($filtertype);
     }
+    if (isset($filterport) && is_array($filterport)) {
+        $policyxml->setTypePortFilter($filterport);
+    }
+    if (isset($filterexcludetype) && is_array($filterexcludetype)) {
+        $policyxml->setPolicyExcludeTypeFilter($filterexcludetype);
+    }
     $policyxml->listAllServices();
 }
 
