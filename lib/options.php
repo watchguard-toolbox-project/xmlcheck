@@ -21,11 +21,15 @@ $longopts = array(
     "listpolicies",
     "listservices",
     "listtype",
+    "listtags",
+    "list-aliases",
+    "list-policies",
+    "list-types",
+    "list-tags",
     "filter-type:",
     "filter-to:",
     "filter-from:",
     "filter-action:",
-    "listtags",
     "alias:",
     "help",
     "verbose",
@@ -65,15 +69,13 @@ function displayHelp() {
     -f, --file filename     inputfile filename
 
     commands:
-    -a aliasname, 
-      --alias aliasname     print alias aliasname
-    -l, --listaliases       lists all aliases
-    -p, --listpolicies      lists all policies
-    -s, --listservices      lists all services
-        --listtype          lists all services
-    -t, --listtags          lists all tags
-    -I, --info              lists general info
-    -W, --warnings          lists warnings (differences to best practice)
+    --alias aliasname     print alias aliasname
+    --list-aliases        lists all aliases
+    --list-policies       lists all policies
+    --list-types          lists all services(policy types)
+    --list-tags           lists all tags
+    --info                lists general info
+    --warnings            lists warnings (differences to best practice)
         
     filters:
     these filters need --listtype, may be used multiple times and together.
@@ -82,7 +84,7 @@ function displayHelp() {
     --filter-from alias      only show policies using alias in from
     --filter-action action   only show policies using action (Deny|Allow)
     example: 
-        --listpolicies
+        --list-policies
         --filter-type HTTPS --filter-to Any-External \
         --filter-from Any-Trusted --filter-from Any-Optional
     will display policies
@@ -141,26 +143,26 @@ if (isset($options["version"]) || isset($options["V"])) {
 $optcount=0;
 $myopts=[];
 
-if (isset($options["listservices"]) || isset($options["s"])
-    || isset($options["listtype"])) {
+if (isset($options["list-types"]) || isset($options["s"])
+    || isset($options["listservices"])  || isset($options["listtype"])) {
     $options["listservices"] = true;
     $optcount++;
-    $myopts[]="--list-type";
+    $myopts[]="--list-types";
 }
 
-if (isset($options["listtags"]) || isset($options["t"])) {
+if (isset($options["list-tags"]) || isset($options["listtags"]) || isset($options["t"])) {
     $options["listtags"] = true;
     $optcount++;
     $myopts[]="--list-tags";
 }
 
-if (isset($options["listaliases"]) || isset($options["l"])) {
-    $options["--listaliases"] = true;
+if (isset($options["list-aliases"]) || isset($options["listaliases"]) || isset($options["l"])) {
+    $options["listaliases"] = true;
     $optcount++;
     $myopts[]="--list-aliases";
 }
 
-if (isset($options["listpolicies"]) || isset($options["p"])) {
+if (isset($options["list-policies"]) || isset($options["listpolicies"]) || isset($options["p"])) {
     $options["listpolicies"] = true;
     $optcount++;
     $myopts[]="--list-policies";
