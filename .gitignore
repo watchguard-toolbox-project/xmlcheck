@@ -3,3 +3,4 @@ vendor/
 composer.lock
 *.out
 cache/
+scripts/deploy-config.sh
