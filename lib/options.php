@@ -29,6 +29,7 @@ $longopts = array(
     "filter-type:",
     "filter-port:",
     "filter-port-mail",
+    "filter-port-web",
     "filter-to:",
     "filter-from:",
     "filter-action:",
@@ -271,6 +272,20 @@ if (isset($options["filter-port-mail"])) {
     $filterport[]="587/tcp";
     $filterport[]="993/tcp";
     $filterport[]="995/tcp";
+    $optcount++;
+
+    foreach($filterport as $filter) {
+        $myopts[]="--filter-port";
+        $myopts[]=$filter;
+    }
+}
+if (isset($options["filter-port-web"])) {
+    if (!is_array($filterport)) {
+        $filterport=[];
+    }
+    $filterport[]="80/tcp";
+    $filterport[]="443/tcp";
+    $filterport[]="443/udp";
     $optcount++;
 
     foreach($filterport as $filter) {
