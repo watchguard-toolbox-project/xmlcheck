@@ -28,6 +28,7 @@ $longopts = array(
     "list-tags",
     "filter-type:",
     "filter-port:",
+    "filter-port-mail",
     "filter-to:",
     "filter-from:",
     "filter-action:",
@@ -89,6 +90,10 @@ function displayHelp() {
     these filters need --list-type, may be used multiple times and together.
     --filter-type action     only show types using action (Deny|Allow)
     --filter-port port       only show types using port (e.g. '25/tcp')
+    
+    special filters
+    --filter-port-mail       only show policies having ports 
+                               25/110/143/465/587/993/995 
     
     example: 
         --list-policies
@@ -250,6 +255,24 @@ if (isset($options["filter-port"])) {
         $filterport[]=$options['filter-port'];
         $optcount+=2;
     }
+    foreach($filterport as $filter) {
+        $myopts[]="--filter-port";
+        $myopts[]=$filter;
+    }
+}
+if (isset($options["filter-port-mail"])) {
+    if (!is_array($filterport)) {
+        $filterport=[];
+    }
+    $filterport[]="25/tcp";
+    $filterport[]="110/tcp";
+    $filterport[]="143/tcp";
+    $filterport[]="465/tcp";
+    $filterport[]="587/tcp";
+    $filterport[]="993/tcp";
+    $filterport[]="995/tcp";
+    $optcount++;
+
     foreach($filterport as $filter) {
         $myopts[]="--filter-port";
         $myopts[]=$filter;
