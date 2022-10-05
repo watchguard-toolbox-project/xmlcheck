@@ -1,5 +1,12 @@
 xmlcheck.php - Changelog
 ------------------------
+v0.7
+----
+    * added --filter-port
+    * added --filter-port-web
+    * added --filter-port-mail
+    * improved filtering
+
 v0.6
 ----
     * added "--filter-to"
