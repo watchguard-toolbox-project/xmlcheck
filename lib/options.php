@@ -11,7 +11,7 @@
 /**
  * Version
  */
-    define("VERSION", "0.7");
+    define("VERSION", "0.8");
 
 $shortopts = "i:f:ha:vlpustEDIWV";
 $longopts = array(
@@ -24,6 +24,7 @@ $longopts = array(
     "listtags",
     "list-aliases",
     "list-policies",
+    "list-tunnels",
     "list-types",
     "list-tags",
     "filter-type:",
@@ -78,6 +79,7 @@ function displayHelp() {
     --list-policies       lists all policies
     --list-types          lists all services(policy types)
     --list-tags           lists all tags
+    --list-tunnels        lists all BOVPN (Gateway-)Tunnels
     --info                lists general info
     --warnings            lists warnings (differences to best practice)
         
@@ -167,6 +169,12 @@ if (isset($options["list-tags"]) || isset($options["listtags"]) || isset($option
     $options["listtags"] = true;
     $optcount++;
     $myopts[]="--list-tags";
+}
+
+if (isset($options["list-tunnels"])) {
+    $options["listtunnels"] = true;
+    $optcount++;
+    $myopts[]="--list-tunnels";
 }
 
 if (isset($options["list-aliases"]) || isset($options["listaliases"]) || isset($options["l"])) {
@@ -378,6 +386,7 @@ if (isset($options['listservices']) || isset($options['listtype'])) $actions++;
 if (isset($options['listpolicies'])) $actions++;
 if (isset($options['listtags'])) $actions++;
 if (isset($options['listaliases'])) $actions++;
+if (isset($options['listtunnels'])) $actions++;
 if (isset($options['alias'])) $actions++;
 if (isset($options['info'])) $actions++;
 if (isset($options['warnings'])) $actions++;
