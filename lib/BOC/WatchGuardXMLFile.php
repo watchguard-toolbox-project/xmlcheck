@@ -42,6 +42,11 @@ class WatchGuardXMLFile
      */
     private $allPolicies;
     /**
+     * array for all tunnels from this xmlfile
+     * @var array
+     */
+    private $allTunnels;
+    /**
      * array for filter-type
      * @var array
      */
@@ -95,6 +100,7 @@ class WatchGuardXMLFile
         $this->allAliases  = [];
         $this->allPolicies = [];
         $this->allServices = [];
+        $this->allTunnels = [];
         $this->allTags = [];
 
         // initialize filters as arrays
@@ -109,6 +115,7 @@ class WatchGuardXMLFile
         $this->getAllAliases();
         $this->getAllServices();
         $this->getAllTags();
+        $this->getAllTunnels();
 
         // initialize policies (gets also references to tags and aliases)
         $this->getAllPolicies();
@@ -128,6 +135,22 @@ class WatchGuardXMLFile
             $this->allAliases[$alias->name->__toString()] = new WatchGuardAlias($alias);
         }
 
+    }
+
+    /**
+     * reads all tunnels from xml and sets the pointer into allTunels array
+     **/
+    private function getAllTunnels() {
+        foreach ($this->xmlfile->{'ike-policy-group-list'}->children() as $tunnel) {
+            $tunnelName = $tunnel->name->__toString();
+            $this->allTunnels[$tunnelName] = new WatchGuardTunnel($tunnel);
+        }
+        foreach ($this->xmlfile->{'abs-ipsec-action-list'}->children() as $ipsecaction) {
+            $ikepolicy=$ipsecaction->{'ike-policy'}->__toString();
+            foreach ($ipsecaction->{'local-remote-pair-list'}->children() as $pair) {
+                $this->allTunnels[$ikepolicy]->addTunnelRoute($pair);
+            }
+        }
     }
 
     /**
@@ -454,6 +477,15 @@ class WatchGuardXMLFile
                 continue;
             }
             $alias->textout($this);
+        }
+    }
+
+    /**
+     * lists (all) tunnels in this xmlfile
+     */
+    public function listAllTunnels() {
+        foreach ($this->allTunnels as $tunnelName => $tunnel) {
+            $tunnel->textout($this);
         }
     }
 

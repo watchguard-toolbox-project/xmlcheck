@@ -24,6 +24,7 @@ $longopts = array(
     "listtags",
     "list-aliases",
     "list-policies",
+    "list-tunnels",
     "list-types",
     "list-tags",
     "filter-type:",
@@ -167,6 +168,12 @@ if (isset($options["list-tags"]) || isset($options["listtags"]) || isset($option
     $options["listtags"] = true;
     $optcount++;
     $myopts[]="--list-tags";
+}
+
+if (isset($options["list-tunnels"])) {
+    $options["listtunnels"] = true;
+    $optcount++;
+    $myopts[]="--list-tunnels";
 }
 
 if (isset($options["list-aliases"]) || isset($options["listaliases"]) || isset($options["l"])) {
@@ -378,6 +385,7 @@ if (isset($options['listservices']) || isset($options['listtype'])) $actions++;
 if (isset($options['listpolicies'])) $actions++;
 if (isset($options['listtags'])) $actions++;
 if (isset($options['listaliases'])) $actions++;
+if (isset($options['listtunnels'])) $actions++;
 if (isset($options['alias'])) $actions++;
 if (isset($options['info'])) $actions++;
 if (isset($options['warnings'])) $actions++;
