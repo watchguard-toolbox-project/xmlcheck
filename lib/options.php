@@ -79,6 +79,7 @@ function displayHelp() {
     --list-policies       lists all policies
     --list-types          lists all services(policy types)
     --list-tags           lists all tags
+    --list-tunnels        lists all BOVPN (Gateway-)Tunnels
     --info                lists general info
     --warnings            lists warnings (differences to best practice)
         
