@@ -242,44 +242,10 @@ class WatchGuardPolicy extends WatchGuardObject
     public function textout($xmlfile) {
         global $options;
 
-        $display = true;
+        print preg_replace("/ /", ".", $this->obj->name->__toString()) . "\n";
 
-        if (
-            // if filter is set to enabled: supress disabled
-            (isset($options['enabled']) && $this->isEnabled() === false)
-            ||
-            // if filter is set to disabled: supress enabled
-            (isset($options['disabled']) && $this->isEnabled() === true)) {
-
-            $display = false;
-        }
-
-        if (count($xmlfile->getPolicyExcludeTypeFilter())>0) {
-            if (in_array($this->getService(), $xmlfile->getPolicyExcludeTypeFilter())) {
-                $display = false;
-            }
-        }
-
-        if (count($xmlfile->getPolicyTagFilter())>0) {
-            $found=false;
-            foreach($this->getTags() as $tagname) {
-                if (in_array($tagname, $xmlfile->getPolicyTagFilter())) {
-                    $found=true;
-                }
-            }
-            if ($found==false) {
-                $display=false;
-            }
-        }
-
-        if ($display == true) {
-
-            print preg_replace("/ /", ".", $this->obj->name->__toString()) . "\n";
-
-            if (isset($options["verbose"])) {
-                $this->verbosetextout($xmlfile);
-            }
-
+        if (isset($options["verbose"])) {
+            $this->verbosetextout($xmlfile);
         }
     }
 

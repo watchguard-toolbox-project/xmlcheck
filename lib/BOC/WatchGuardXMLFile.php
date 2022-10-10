@@ -526,6 +526,7 @@ class WatchGuardXMLFile
      * lists (all) policies in this xmlfile
      */
     public function listAllPolicies() {
+        global $options;
 
         foreach ($this->allPolicies as $policyName => $policy) {
             /* @var WatchGuardPolicy $policy */
@@ -571,6 +572,35 @@ class WatchGuardXMLFile
                     $display = false;
                 }
             }
+
+            if (
+                // if filter is set to enabled: supress disabled
+                (isset($options['enabled']) && $policy->isEnabled() === false)
+                ||
+                // if filter is set to disabled: supress enabled
+                (isset($options['disabled']) && $policy->isEnabled() === true)) {
+
+                $display = false;
+            }
+
+            if (count($this->getPolicyExcludeTypeFilter())>0) {
+                if (in_array($policy->getService(), $this->getPolicyExcludeTypeFilter())) {
+                    $display = false;
+                }
+            }
+
+            if (count($this->getPolicyTagFilter())>0) {
+                $found=false;
+                foreach($policy->getTags() as $tagname) {
+                    if (in_array($tagname, $this->getPolicyTagFilter())) {
+                        $found=true;
+                    }
+                }
+                if ($found==false) {
+                    $display=false;
+                }
+            }
+
             if ($display==true) {
                 $policy->textout($this);
             }
