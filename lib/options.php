@@ -31,6 +31,7 @@ $longopts = array(
     "filter-port:",
     "filter-port-mail",
     "filter-port-web",
+    "filter-tag:",
     "filter-to:",
     "filter-from:",
     "filter-action:",
@@ -89,6 +90,7 @@ function displayHelp() {
     --filter-to   alias      only show policies using alias in to
     --filter-from alias      only show policies using alias in from
     --filter-action action   only show policies using action (Deny|Allow)
+    --filter-tag tag         only show policies using tag
     
     these filters need --list-type, may be used multiple times and together.
     --filter-type action     only show types using action (Deny|Allow)
@@ -240,6 +242,21 @@ if (isset($options["filter-type"])) {
     }
 }
 
+if (isset($options["filter-tag"])) {
+    $filtertag=[];
+    if (is_array($options['filter-tag'])) {
+        $filtertag=$options['filter-tag'];
+        $optcount+= (2* count($filtertag));
+    } else {
+        $filtertag[]=$options['filter-tag'];
+        $optcount+=2;
+    }
+    foreach($filtertag as $filter) {
+        $myopts[]="--filter-tag";
+        $myopts[]=$filter;
+    }
+}
+
 if (isset($options["filter-exclude-type"])) {
     $filterexcludetype=[];
     if (is_array($options['filter-exclude-type'])) {
@@ -372,6 +389,10 @@ if ($xmlfile === "") {
     exit;
 }
 
+if (isset($filtertag) && is_array($filtertag) && !isset($options['listpolicies']) && !isset($options['listtags'])) {
+    displayError("--filter-tag needs --list-policies or --list-tags");
+    exit;
+}
 if (isset($filtertype) && is_array($filtertype) && !isset($options['listpolicies']) && !isset($options['listservices'])) {
     displayError("--filter-type needs --list-policies or --list-types");
     exit;

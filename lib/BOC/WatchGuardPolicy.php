@@ -27,6 +27,11 @@ class WatchGuardPolicy extends WatchGuardObject
      * @var array
      */
     private $aliasesFrom;
+    /**
+     * stores all tags
+     * @var array
+     */
+    private $tags;
 
     /**
      * WatchGuardPolicy constructor.
@@ -36,6 +41,7 @@ class WatchGuardPolicy extends WatchGuardObject
         parent::__construct($element);
         $this->aliasesTo   = [];
         $this->aliasesFrom = [];
+        $this->tags        = [];
     }
 
     /**
@@ -103,6 +109,25 @@ class WatchGuardPolicy extends WatchGuardObject
     public function storeAliasesTo ($aliasarray) {
         $this->aliasesTo = array_merge($this->aliasesTo, $aliasarray);
     }
+
+    /**
+     * stores the tags into the tags array.
+     * @param $tags
+     */
+    public function storeTag ($tag) {
+        $tagsarray= array($tag);
+        $this->tags = array_merge($this->tags, $tagsarray);
+    }
+    /**
+     * retrieves the tags into the tags array.
+     * @return array
+     */
+    public function getTags()
+    {
+        $tags = $this->tags;
+        return $tags;
+    }
+
 
     /**
      * stores the alias into the aliasesFrom array.
@@ -197,12 +222,14 @@ class WatchGuardPolicy extends WatchGuardObject
 
             $fromAliases = implode(', ', $this->getAliasesFrom());
             $toAliases   = implode(', ', $this->getAliasesTo());
+            $tags        = implode(', ', $this->getTags());
 
             print "  From   : " . $fromAliases . "\n";
             print "  To     : " . $toAliases . "\n";
             print "  Service: " . $this->getService() . "\n";
             print "  Enabled: " . ($this->isEnabled() === true ? "yes" : "no") . "\n";
             print "  Action : " . $this->getAction() . "\n";
+            print "  Tags   : " . $tags . "\n";
         }
 
         print "\n";
@@ -230,6 +257,18 @@ class WatchGuardPolicy extends WatchGuardObject
         if (count($xmlfile->getPolicyExcludeTypeFilter()>0)) {
             if (in_array($this->getService(), $xmlfile->getPolicyExcludeTypeFilter())) {
                 $display = false;
+            }
+        }
+
+        if (count($xmlfile->getPolicyTagFilter()>0)) {
+            $found=false;
+            foreach($this->getTags() as $tagname) {
+                if (in_array($tagname, $xmlfile->getPolicyTagFilter())) {
+                    $found=true;
+                }
+            }
+            if ($found==false) {
+                $display=false;
             }
         }
 

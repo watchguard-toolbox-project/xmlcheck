@@ -41,6 +41,9 @@ if (isset($options["listtags"])) {
 }
 
 if (isset($options["listpolicies"])) {
+    if (isset($filtertag) && is_array($filtertag)) {
+        $policyxml->setPolicyTagFilter($filtertag);
+    }
     if (isset($filtertype) && is_array($filtertype)) {
         $policyxml->setPolicyTypeFilter($filtertype);
     }

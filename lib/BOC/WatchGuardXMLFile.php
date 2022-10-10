@@ -52,6 +52,11 @@ class WatchGuardXMLFile
      */
     private $policyTypeFilter;
     /**
+     * array for filter-tag
+     * @var array
+     */
+    private $policyTagFilter;
+    /**
      * array for filter-exclude-type
      * @var array
      */
@@ -108,6 +113,7 @@ class WatchGuardXMLFile
         $this->policyFromFilter = [];
         $this->policyToFilter = [];
         $this->policyTypeFilter = [];
+        $this->policyTagFilter = [];
 
         $this->policyExcludeTypeFilter = [];
 
@@ -396,6 +402,20 @@ class WatchGuardXMLFile
     }
 
     /**
+     * @return array
+     */
+    public function getPolicyTagFilter() {
+        return $this->policyTagFilter;
+    }
+
+    /**
+     * @param array $policyTagFilter
+     */
+    public function setPolicyTagFilter($policyTagFilter) {
+        $this->policyTagFilter = $policyTagFilter;
+    }
+
+    /**
      * stores policy references to alias objects
      */
     public function findAliasRefByPolicy() {
@@ -433,6 +453,19 @@ class WatchGuardXMLFile
                 foreach ($policy->{'tag-list'}->xpath('tag') as $tag) {
                     $tagName = $tag->__toString();
                     $this->allTags[$tagName]->storeReference($policyName,"policy");
+                    if (isset($this->allPolicies[$policyName."-00"])) {
+                        $this->allPolicies[$policyName."-00"]->storeTag($tagName);
+                    } else {
+                        if (preg_match("/MUVPN/",$policyName)) {
+                            // retry MUVPN-Any.In + MUVPN-Any.Out
+                            if (isset($this->allPolicies[$policyName.".In-00"])) {
+                                $this->allPolicies[ $policyName . ".In-00" ]->storeTag($tagName);
+                            }
+                            if (isset($this->allPolicies[$policyName.".Out-00"])) {
+                                $this->allPolicies[$policyName.".Out-00"]->storeTag($tagName);
+                            }
+                        }
+                    }
                 }
 
             }
