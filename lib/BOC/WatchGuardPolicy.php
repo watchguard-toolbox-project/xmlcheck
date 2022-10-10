@@ -254,13 +254,13 @@ class WatchGuardPolicy extends WatchGuardObject
             $display = false;
         }
 
-        if (count($xmlfile->getPolicyExcludeTypeFilter()>0)) {
+        if (count($xmlfile->getPolicyExcludeTypeFilter())>0) {
             if (in_array($this->getService(), $xmlfile->getPolicyExcludeTypeFilter())) {
                 $display = false;
             }
         }
 
-        if (count($xmlfile->getPolicyTagFilter()>0)) {
+        if (count($xmlfile->getPolicyTagFilter())>0) {
             $found=false;
             foreach($this->getTags() as $tagname) {
                 if (in_array($tagname, $xmlfile->getPolicyTagFilter())) {
