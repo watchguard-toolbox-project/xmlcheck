@@ -32,6 +32,7 @@ class WatchGuardService extends WatchGuardObject
          */
         $defaultServices = array(
             "Allow Hotspot Session Mgmt",
+            "AOL",
             "Archie",
             "Auth",
             "BGP",
@@ -130,6 +131,15 @@ class WatchGuardService extends WatchGuardObject
             "WG-Gateway-Wireless-Controller",
             "WG-Logging",
             "WG-LogViewer-ReportMgr",
+            "WG-LogViewer-ReportMgr.1",
+            "WG-LogViewer-ReportMgr.2",
+            "WG-LogViewer-ReportMgr.3",
+            "WG-LogViewer-ReportMgr.4",
+            "WG-LogViewer-ReportMgr.5",
+            "WG-LogViewer-ReportMgr.6",
+            "WG-LogViewer-ReportMgr.7",
+            "WG-LogViewer-ReportMgr.8",
+            "WG-LogViewer-ReportMgr.9",
             "WG-Mgmt-Server",
             "WG-SmallOffice-Mgmt",
             "WG-TDR-Host-Sensor",
