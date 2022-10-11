@@ -126,6 +126,7 @@ class WatchGuardService extends WatchGuardObject
             "WG-Cert-Portal",
             "WG-Cloud-Managed-WiFi",
             "WG-Cloud-Managed-WiFi.1",
+            "WG-Cloud-Managed-WiFi.2",
             "WG-Firebox-Mgmt",
             "WG-Fireware-XTM-WebUI",
             "WG-Gateway-Wireless-Controller",
