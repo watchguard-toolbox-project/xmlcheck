@@ -112,6 +112,7 @@ class WatchGuardService extends WatchGuardObject
             "TACACS",
             "TACACS+",
             "TCP",
+            "TCP-proxy",
             "TCP-UDP",
             "TCP-UDP-proxy",
             "Telnet",
