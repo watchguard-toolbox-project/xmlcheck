@@ -101,7 +101,21 @@ class WatchGuardXMLFile
      * @param $xmlfilename
      */
     public function __construct($xmlfilename) {
+        global $options;
+        libxml_use_internal_errors(true);
         $this->xmlfile = simplexml_load_file($xmlfilename);
+        if ($this->xmlfile === false) {
+            // don't use die, for possibility to check error-level (failure)
+            //fwrite (STDERR, "errmsg");
+            //fwrite (STDOUT, "errmsg");
+            print "Error: $xmlfilename is not a valid xml file.\n";
+            if (isset($options['verbose']) && $options['verbose']==true) {
+                foreach (libxml_get_errors() as $error) {
+                    print($error->message);
+                }
+            }
+            exit(1);
+        }
         $this->allAliases  = [];
         $this->allPolicies = [];
         $this->allServices = [];
