@@ -35,6 +35,7 @@ class WatchGuardService extends WatchGuardObject
             "AOL",
             "Archie",
             "Auth",
+            "Blocked Ports",
             "BGP",
             "Citrix",
             "Clarent-Command",
