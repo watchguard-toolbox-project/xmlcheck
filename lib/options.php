@@ -240,6 +240,10 @@ if (isset($options["filter-type"])) {
         $myopts[]="--filter-type";
         $myopts[]=$filter;
     }
+    // workaround blank behaviour in BASH and VARIABLES
+    for ($i=0; $i<count($filtertype); $i++) {
+        $filtertype[$i]=preg_replace("/°/"," ", $filtertype[$i]);
+    }
 }
 
 if (isset($options["filter-tag"])) {
