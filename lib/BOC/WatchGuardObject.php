@@ -30,6 +30,10 @@ class WatchGuardObject
     protected $refcount;
 
     /**
+     * @var property of this object (proberty value from xml file)
+     */
+    protected $property;
+    /**
      * WatchGuardObject constructor.
      * @param SimpleXMLElement $element
      */
@@ -38,6 +42,9 @@ class WatchGuardObject
         $this->obj = $element;
         $this->referencedBy = [];
         $this->refcount = 0;
+        if (isset($this->obj->property)) {
+            $this->property = $this->obj->property->__toString();
+        }
     }
 
     /**
@@ -78,10 +85,18 @@ class WatchGuardObject
     protected function printName($xmlfile) {
         global $options;
 
+        $property="";
+        if (isset($this->property)) {
+            switch ($this->property) {
+                case 32:
+                    $property = '(Prop:' . $this->property . ":SNAT-ACTION?)";
+                    break;
+            }
+        }
         if ($this->refcount == 0) {
-            print $this->obj->name->__toString() . " (unused)\n";
+            print $this->obj->name->__toString() . "$property (unused)\n";
         } else {
-            print $this->obj->name->__toString() . "\n";
+            print $this->obj->name->__toString() . "$property\n";
         }
 
         if (isset($options["verbose"])) {
