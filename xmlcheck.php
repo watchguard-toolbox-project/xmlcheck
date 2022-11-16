@@ -80,13 +80,6 @@ if (isset($options["listtunnels"])) {
 }
 
 if (isset($options["alias"]) || isset($options["a"])) {
-    $printalias = isset($options["alias"]) ? $options["alias"] : $options["a"];
-    if (is_array($printalias)) {
-        $printaliases = $printalias;
-    } else {
-        $printaliases = [];
-        $printaliases[] = $printalias;
-    }
     foreach ($printaliases as $printalias) {
         print "\n";
         $policyxml->printAlias($printalias);
