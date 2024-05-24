@@ -27,6 +27,7 @@ $longopts = array(
     "list-tunnels",
     "list-types",
     "list-tags",
+    "list-nats",
     "filter-type:",
     "filter-port:",
     "filter-port-mail",
@@ -80,6 +81,7 @@ function displayHelp() {
     --list-policies       lists all policies
     --list-types          lists all services(policy types)
     --list-tags           lists all tags
+    --list-nats           lists all nats
     --list-tunnels        lists all BOVPN (Gateway-)Tunnels
     --info                lists general info
     --warnings            lists warnings (differences to best practice)
@@ -190,6 +192,13 @@ if (isset($options["list-policies"]) || isset($options["listpolicies"]) || isset
     $optcount++;
     $myopts[]="--list-policies";
 }
+
+if (isset($options["list-nats"])) {
+    $options["listnats"] = true;
+    $optcount++;
+    $myopts[]="--list-nats";
+}
+
 
 if (isset($options["verbose"]) || isset($options["v"])) {
     $options["verbose"] = true;
@@ -410,6 +419,7 @@ $actions = 0;
 if (isset($options['listservices']) || isset($options['listtype'])) $actions++;
 if (isset($options['listpolicies'])) $actions++;
 if (isset($options['listtags'])) $actions++;
+if (isset($options['listnats'])) $actions++;
 if (isset($options['listaliases'])) $actions++;
 if (isset($options['listtunnels'])) $actions++;
 if (isset($options['alias'])) $actions++;

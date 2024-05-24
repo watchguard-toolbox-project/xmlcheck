@@ -36,6 +36,10 @@ if (isset($options["listaliases"])) {
     $policyxml->listAllAliases();
 }
 
+if (isset($options["listnats"])) {
+    $policyxml->listAllNats();
+}
+
 if (isset($options["listtags"])) {
     $policyxml->listAllTags();
 }

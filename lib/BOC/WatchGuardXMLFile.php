@@ -94,6 +94,12 @@ class WatchGuardXMLFile
     private $allTags;
 
     /**
+     * array for all nats from this xmlfile
+     * @var array
+     */
+    private $allNats;
+
+    /**
      * WatchGuardXMLFile constructor.
      *
      * loads the xmlfile, initializes all aliases, policies and services.
@@ -136,6 +142,7 @@ class WatchGuardXMLFile
         $this->getAllServices();
         $this->getAllTags();
         $this->getAllTunnels();
+        $this->getAllNats();
 
         // initialize policies (gets also references to tags and aliases)
         $this->getAllPolicies();
@@ -144,6 +151,16 @@ class WatchGuardXMLFile
         $this->findAliasReferences();
         $this->findServiceRefByPolicy();
         $this->findTagRefByPolicy();
+    }
+
+    /**
+     * reads all nats from xml and sets the pointer into nats array
+     **/
+    private function getAllNats() {
+
+        foreach ($this->xmlfile->{'nat-list'}->children() as $nat) {
+            $this->allNats[$nat->name->__toString()] = new WatchGuardNat($nat);
+        }
     }
 
     /**
@@ -156,7 +173,6 @@ class WatchGuardXMLFile
         }
 
     }
-
     /**
      * reads all tunnels from xml and sets the pointer into allTunels array
      **/
@@ -524,6 +540,15 @@ class WatchGuardXMLFile
                 continue;
             }
             $alias->textout($this);
+        }
+    }
+
+    /**
+     * lists (all) nats in this xmlfile
+     */
+    public function listAllNats() {
+        foreach ($this->allNats as $natName => $nat) {
+            $nat->textout($this);
         }
     }
 
