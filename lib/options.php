@@ -360,6 +360,21 @@ if (isset($options["filter-to"])) {
         $myopts[]=$filter;
     }
 }
+if (isset($options["alias"]) || isset($options["a"])) {
+    $printalias = isset($options["alias"]) ? $options["alias"] : $options["a"];
+    if (is_array($printalias)) {
+        $printaliases = $printalias;
+        $optcount+= 2* count($printaliases);
+    } else {
+        $printaliases = [];
+        $printaliases[] = $printalias;
+        $optcount+=2;
+    }
+    foreach($printaliases as $alias) {
+        $myopts[]="--alias";
+        $myopts[]=$alias;
+    }
+}
 
 if (isset($options["filter-action"])) {
     if (is_array($options['filter-action'])) {
@@ -422,7 +437,6 @@ if (isset($options['listtags'])) $actions++;
 if (isset($options['listnats'])) $actions++;
 if (isset($options['listaliases'])) $actions++;
 if (isset($options['listtunnels'])) $actions++;
-if (isset($options['alias'])) $actions++;
 if (isset($options['info'])) $actions++;
 if (isset($options['warnings'])) $actions++;
 

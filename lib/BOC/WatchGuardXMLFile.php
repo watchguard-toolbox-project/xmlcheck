@@ -757,7 +757,7 @@ class WatchGuardXMLFile
             $warnings++;
         }
 
-        printf("\nSumnary:\n");
+        printf("\nSummary:\n");
         printf("%-30s%-49s\n", "Total Warnings:", $warnings);
         printf("\n\n");
     }
