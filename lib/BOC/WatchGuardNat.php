@@ -29,7 +29,7 @@ class WatchGuardNat extends WatchGuardObject
     {
         parent::__construct($element);
         $members = $this->obj->{'nat-item'}->{'member'};
-        if (count($members) == 1) {
+        if (is_array($members) && count($members)== 1) {
             // only one member, check for interface...
             $member = $members[0];
         }
