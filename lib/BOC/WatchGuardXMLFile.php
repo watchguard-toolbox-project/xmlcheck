@@ -704,29 +704,83 @@ class WatchGuardXMLFile
         }
     }
 
-    public function printInfo() {
+    public function printInfo($format="text") {
 
         $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
         $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
         $misc = new WatchGuardMiscSettings($this->xmlfile->{'system-parameters'}->{'misc-global-setting'});
         // $sso->debug();
 
-        printf("\nXML-file Info\n\n");
-        printf("%-30s%-49s\n", "Auto-Order:", $misc->getAutoOrder());
+        $v = [];
 
-        printf("\nNetworking:\n");
-        printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->getAlgorithm(). ' (' . $multiwan->getAlgorithmText() . ')');
-        printf("%-30s%-49s\n", "MTU-Probing:", $misc->getMTUProbing());
-        printf("%-30s%-49s\n", "Auto-Reboot:", $misc->getAutoReboot());
-        printf("%-30s%-49s\n", "QoS:", $misc->getQoS());
-        printf("%-30s%-49s\n", "BlockSpoofedPackets:", $misc->getBlockSpoofEnabled());
-        printf("%-30s%-49s\n", "SynCheckingEnabled:", $misc->getSynChecking());
-        printf("%-30s%-49s\n", "VLAN-Forwarding:", $misc->getVlanForward());
+        $v[] = ['setting' => 'Auto-Order',
+                'value'   => $misc->getAutoOrder(),
+                'info'    => '' ];
 
-        printf("\nOther:\n");
-        printf("%-30s%-49s\n", "SSO-Settings:", $sso->isEnabled() . ' ' .  $sso->getSSOAgents());
+        $v[] = ['setting'  => 'Multi-WAN',
+                'value'   => $multiwan->getAlgorithm(),
+                'info'    => '(' . $multiwan->getAlgorithmText() . ')' ];
 
-        printf("\n\n");
+        $v[] = ['setting' => 'MTU-Probing',
+                'value'   => $misc->getMTUProbing(),
+                'info'    => '' ];
+
+        $v[] = ['setting' => 'Auto-Order',
+                'value'   => $misc->getAutoOrder(),
+                'info'    => '' ];
+
+        $v[] = ['setting' => 'QoS',
+                'value'   => $misc->getQoS(),
+                'info'    => '' ];
+
+        $v[] = ['setting' => 'BlockSpoofedPackets',
+                'value'   => $misc->getBlockSpoofEnabled(),
+                'info'    => '' ];
+
+        $v[] = ['setting' => 'SynCheckingEnabled',
+                'value'   => $misc->getSynChecking(),
+                'info'    => '' ];
+
+        $v[] = ['setting' => 'VLAN-Forwarding',
+                'value'   => $misc->getVlanForward(),
+                'info'    => '' ];
+
+        $v[] = ['setting' => 'SSO-Settings',
+                'value'   => $sso->isEnabled(),
+                'info'    => $sso->getSSOAgents() ];
+
+        /*
+        $v[] = ['setting' => 'Foo-Setting',
+            'value'   => '1',
+            'info'    => 'foo bar test' ];
+        */
+
+
+        if ($format == 'text') {
+
+            printf("\nXML-file Info\n\n");
+            foreach ($v as $row => $values) {
+                printf("%-30s%-49s\n", $values['setting'] . ":", $values['value']);
+                if ($values['setting'] == "Auto-Order") {
+                    printf("\nNetworking:\n");
+                }
+                if ($values['setting'] == "VLAN-Forwarding") {
+                    printf("\nOther:\n");
+                }
+            }
+
+            printf("\n\n");
+
+        }
+
+        if ($format == 'json' || $format == 'json-pretty') {
+            $j = [];
+            foreach ($v as $row => $values) {
+                $j['setting'][$values['setting']] = $values;
+            }
+            print json_encode($j, $format == 'json-pretty' ? JSON_PRETTY_PRINT : NULL );
+            print "\n";
+        }
     }
 
     public function printWarnings() {

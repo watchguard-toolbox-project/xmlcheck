@@ -45,6 +45,8 @@ $longopts = array(
     "enabled",
     "disabled",
     "info",
+    "json",
+    "json-pretty",
     "warnings",
     "version",
 );
@@ -115,6 +117,8 @@ function displayHelp() {
     -D, --disabled          only show disabled policies (= skip enabled policies)
     -N, --nospace           change spaces to dots in policy name output
     -u, --unused            only show unused (aliases/tags/etc.)
+    --json                  currently only available with info - output in json format
+    --json-pretty           same as --json, but uses JSON_PRETTY_PRINT
     
     debug:
     --simplexmlout          print SimpleXML structure 
@@ -384,6 +388,19 @@ if (isset($options["filter-action"])) {
         $filteraction=$options['filter-action'];
         $optcount+=2;
     }
+}
+
+if (isset($options["json"])) {
+    $options["json"] = true;
+    $optcount++;
+    $myopts[]="--json";
+}
+
+if (isset($options["json-pretty"])) {
+    $options["json"] = true;
+    $options["json-pretty"] = true;
+    $optcount++;
+    $myopts[]="--json-pretty";
 }
 
 

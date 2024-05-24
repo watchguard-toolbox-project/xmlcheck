@@ -92,7 +92,14 @@ if (isset($options["alias"]) || isset($options["a"])) {
 }
 
 if (isset($options["info"])) {
-    $policyxml->printInfo();
+    $format='text';
+    if (isset($options['json'])) {
+        $format = 'json';
+    }
+    if (isset($options['json-pretty'])) {
+        $format = 'json-pretty';
+    }
+    $policyxml->printInfo($format);
 }
 
 if (isset($options["warnings"])) {
