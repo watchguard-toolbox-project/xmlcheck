@@ -711,9 +711,21 @@ class WatchGuardXMLFile
         $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
         $misc = new WatchGuardMiscSettings($this->xmlfile->{'system-parameters'}->{'misc-global-setting'});
         $device = new WatchGuardDeviceConf($this->xmlfile->{'system-parameters'}->{'device-conf'});
+        $version = new WatchGuardXMLVersion($this->xmlfile->{'for-version'});
+
         // $sso->debug();
 
         $v = [];
+
+        $v[] = ['setting' => 'System-Name',
+            'value'   => $device->getSystemName(),
+            'info'    => '' ];
+        $v[] = ['setting' => 'Model',
+            'value'   => $device->getModel(),
+            'info'    => '' ];
+        $v[] = ['setting' => 'Firmware-Version',
+            'value'   => $version->getVersion(),
+            'info'    => '' ];
 
         $v[] = ['setting' => 'Auto-Order',
                 'value'   => $misc->getAutoOrder(),
@@ -722,27 +734,18 @@ class WatchGuardXMLFile
         $v[] = ['setting'  => 'Multi-WAN',
                 'value'   => $multiwan->getAlgorithm(),
                 'info'    => '(' . $multiwan->getAlgorithmText() . ')' ];
-
         $v[] = ['setting' => 'MTU-Probing',
                 'value'   => $misc->getMTUProbing(),
                 'info'    => '' ];
-
-        $v[] = ['setting' => 'Auto-Order',
-                'value'   => $misc->getAutoOrder(),
-                'info'    => '' ];
-
         $v[] = ['setting' => 'QoS',
                 'value'   => $misc->getQoS(),
                 'info'    => '' ];
-
         $v[] = ['setting' => 'BlockSpoofedPackets',
                 'value'   => $misc->getBlockSpoofEnabled(),
                 'info'    => '' ];
-
         $v[] = ['setting' => 'SynCheckingEnabled',
                 'value'   => $misc->getSynChecking(),
                 'info'    => '' ];
-
         $v[] = ['setting' => 'VLAN-Forwarding',
                 'value'   => $misc->getVlanForward(),
                 'info'    => '' ];
@@ -750,14 +753,6 @@ class WatchGuardXMLFile
         $v[] = ['setting' => 'SSO-Settings',
                 'value'   => $sso->isEnabled(),
                 'info'    => $sso->getSSOAgents() ];
-
-        $v[] = ['setting' => 'Model',
-            'value'   => $device->getModel(),
-            'info'    => '' ];
-
-        $v[] = ['setting' => 'System-Name',
-            'value'   => $device->getSystemName(),
-            'info'    => '' ];
 
 
         /*
@@ -770,16 +765,18 @@ class WatchGuardXMLFile
         if ($format == 'text') {
 
             printf("\nXML-file Info\n\n");
+            printf("\nDevice-Info:\n");
             foreach ($v as $row => $values) {
                 printf("%-30s%-49s\n", $values['setting'] . ":", $values['value']);
+
+                if ($values['setting'] == "Firmware-Version") {
+                    printf("\nPolicy-Info:\n");
+                }
                 if ($values['setting'] == "Auto-Order") {
                     printf("\nNetworking:\n");
                 }
                 if ($values['setting'] == "VLAN-Forwarding") {
                     printf("\nOther:\n");
-                }
-                if ($values['setting'] == "SSO-Settings") {
-                    printf("\nDevice-Info:\n");
                 }
             }
 
