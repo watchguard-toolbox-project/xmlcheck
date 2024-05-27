@@ -195,8 +195,10 @@ class WatchGuardXMLFile
      **/
     private function getAllTags() {
 
-        foreach ($this->xmlfile->{'policy-tag-list'}->children() as $tag) {
-            $this->allTags[$tag->name->__toString()] = new WatchGuardTag($tag);
+        if ($this->xmlfile->{'policy-tag-list'}->children() != null) {
+            foreach ($this->xmlfile->{'policy-tag-list'}->children() as $tag) {
+                $this->allTags[$tag->name->__toString()] = new WatchGuardTag($tag);
+            }
         }
 
     }
@@ -544,6 +546,27 @@ class WatchGuardXMLFile
         }
     }
 
+    public function getAliasCount() {
+        $count=0;
+        foreach ($this->allAliases as $aliasName => $alias) {
+            // ignore referenced aliases ending .1.from or .1.to or .from.[1234]
+            // as these are refs to policies...
+            if (preg_match("/((\.1\.(from|to)|\.(from|to)(\.\d+)?)$|".
+                    "^".
+                    "(Any|Firebox|PPTP|SSL-VPN|External|Trusted|Optional|".
+                    ".*\.snat|".
+                    "Any-(Trusted|Optional|External|MUVPN)|Any-BOVPN)".
+                    "$)/", $aliasName)
+                ) {
+                continue;
+            } else {
+                print_r($aliasName);
+                $count++;
+            }
+        }
+        return $count;
+    }
+
     /**
      * lists (all) nats in this xmlfile
      */
@@ -732,6 +755,15 @@ class WatchGuardXMLFile
             'value'   => $cluster->isEnabled(),
             'info'    => '' ];
 
+        $v[] = ['setting' => 'Policies',
+            'value'   => count($this->allPolicies),
+            'info'    => '' ];
+        $v[] = ['setting' => 'Aliases',
+            'value'   => $this->getAliasCount(),
+            'info'    => '' ];
+        $v[] = ['setting' => 'Tags',
+            'value'   => count($this->allTags),
+            'info'    => '' ];
         $v[] = ['setting' => 'Auto-Order',
                 'value'   => $misc->getAutoOrder(),
                 'info'    => '' ];
