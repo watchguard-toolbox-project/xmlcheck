@@ -16,6 +16,7 @@ namespace BOC;
 
 // use BOC\WatchGuardAlias;
 use BOC\WatchGuardObject;
+use BOC\WatchGuardDeviceConf;
 use SimpleXMLElement;
 
 /**
@@ -709,6 +710,7 @@ class WatchGuardXMLFile
         $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
         $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
         $misc = new WatchGuardMiscSettings($this->xmlfile->{'system-parameters'}->{'misc-global-setting'});
+        $device = new WatchGuardDeviceConf($this->xmlfile->{'system-parameters'}->{'device-conf'});
         // $sso->debug();
 
         $v = [];
@@ -749,6 +751,15 @@ class WatchGuardXMLFile
                 'value'   => $sso->isEnabled(),
                 'info'    => $sso->getSSOAgents() ];
 
+        $v[] = ['setting' => 'Model',
+            'value'   => $device->getModel(),
+            'info'    => '' ];
+
+        $v[] = ['setting' => 'System-Name',
+            'value'   => $device->getSystemName(),
+            'info'    => '' ];
+
+
         /*
         $v[] = ['setting' => 'Foo-Setting',
             'value'   => '1',
@@ -766,6 +777,9 @@ class WatchGuardXMLFile
                 }
                 if ($values['setting'] == "VLAN-Forwarding") {
                     printf("\nOther:\n");
+                }
+                if ($values['setting'] == "SSO-Settings") {
+                    printf("\nDevice-Info:\n");
                 }
             }
 
