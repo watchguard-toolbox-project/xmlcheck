@@ -707,11 +707,12 @@ class WatchGuardXMLFile
 
     public function printInfo($format="text") {
 
-        $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
-        $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
-        $misc = new WatchGuardMiscSettings($this->xmlfile->{'system-parameters'}->{'misc-global-setting'});
-        $device = new WatchGuardDeviceConf($this->xmlfile->{'system-parameters'}->{'device-conf'});
-        $version = new WatchGuardXMLVersion($this->xmlfile->{'for-version'});
+        $multiwan = new WatchGuardMultiWan($this->xmlfile);
+        $sso = new WatchGuardSSO($this->xmlfile);
+        $misc = new WatchGuardMiscSettings($this->xmlfile);
+        $device = new WatchGuardDeviceConf($this->xmlfile);
+        $cluster = new WatchGuardCluster($this->xmlfile);
+        $version = new WatchGuardXMLVersion($this->xmlfile);
 
         // $sso->debug();
 
@@ -725,6 +726,10 @@ class WatchGuardXMLFile
             'info'    => '' ];
         $v[] = ['setting' => 'Firmware-Version',
             'value'   => $version->getVersion(),
+            'info'    => '' ];
+
+        $v[] = ['setting' => 'ClusterEnabled',
+            'value'   => $cluster->isEnabled(),
             'info'    => '' ];
 
         $v[] = ['setting' => 'Auto-Order',
@@ -770,6 +775,9 @@ class WatchGuardXMLFile
                 printf("%-30s%-49s\n", $values['setting'] . ":", $values['value']);
 
                 if ($values['setting'] == "Firmware-Version") {
+                    printf("\nCluster-Info:\n");
+                }
+                if ($values['setting'] == "ClusterEnabled") {
                     printf("\nPolicy-Info:\n");
                 }
                 if ($values['setting'] == "Auto-Order") {

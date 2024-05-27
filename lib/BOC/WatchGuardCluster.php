@@ -13,7 +13,7 @@ use SimpleXMLElement;
  * Class WatchGuardAlias
  * @package BOC
  */
-class WatchGuardDeviceConf extends WatchGuardObject
+class WatchGuardCluster extends WatchGuardObject
 {
     /**
      * color of Tag
@@ -23,11 +23,15 @@ class WatchGuardDeviceConf extends WatchGuardObject
 
     /**
      * WatchGuardTag constructor.
-     * @param SimpleXMLElement $xmlfile
+     * @param SimpleXMLElement $element
      */
-    public function __construct(SimpleXMLElement $xmlfile)
+    public function __construct($xmlfile)
     {
-        parent::__construct($xmlfile->{'system-parameters'}->{'device-conf'});
+        parent::__construct($xmlfile->{'system-parameters'}->{'cluster'});
+    }
+
+    public function isEnabled(){
+        return ($this->obj->{'enabled'}->__toString());
     }
 
     public function getModel(){

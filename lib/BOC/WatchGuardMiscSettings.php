@@ -23,11 +23,11 @@ class WatchGuardMiscSettings extends WatchGuardObject
 
     /**
      * WatchGuardTag constructor.
-     * @param SimpleXMLElement $element
+     * @param SimpleXMLElement $xmlfile
      */
-    public function __construct(SimpleXMLElement $element)
+    public function __construct(SimpleXMLElement $xmlfile)
     {
-        parent::__construct($element);
+        parent::__construct($xmlfile->{'system-parameters'}->{'misc-global-setting'});
     }
 
     public function getAutoOrder(){
