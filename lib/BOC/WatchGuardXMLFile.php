@@ -560,7 +560,6 @@ class WatchGuardXMLFile
                 ) {
                 continue;
             } else {
-                print_r($aliasName);
                 $count++;
             }
         }

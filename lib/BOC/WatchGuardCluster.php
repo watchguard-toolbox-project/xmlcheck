@@ -31,7 +31,11 @@ class WatchGuardCluster extends WatchGuardObject
     }
 
     public function isEnabled(){
-        return ($this->obj->{'enabled'}->__toString());
+        $return = "0";
+        if (isset($this->obj->{'enabled'})) {
+            $return=($this->obj->{'enabled'}->__toString());
+        }
+        return $return;
     }
 
     public function getModel(){
