@@ -15,8 +15,8 @@
 namespace BOC;
 
 // use BOC\WatchGuardAlias;
-use BOC\WatchGuardObject;
 use BOC\WatchGuardDeviceConf;
+use BOC\WatchGuardObject;
 use SimpleXMLElement;
 
 /**
@@ -100,7 +100,12 @@ class WatchGuardXMLFile
      */
     private $allNats;
 
+    /**
+     * array for outputbuffering, used for --json etc.
+     * @var array
+     */
     private $output = [];
+
     /**
      * WatchGuardXMLFile constructor.
      *
@@ -229,6 +234,14 @@ class WatchGuardXMLFile
             $this->allServices[$service->name->__toString()] = new WatchGuardService($service);
         }
 
+    }
+
+    /**
+     * @return array
+     */
+    public function getOutput()
+    {
+        return $this->output;
     }
 
     /**
@@ -590,8 +603,6 @@ class WatchGuardXMLFile
      */
     public function listAllPolicies() {
         global $options;
-        // initialize outputarray;
-        $this->output = [];
 
         foreach ($this->allPolicies as $policyName => $policy) {
             /* @var WatchGuardPolicy $policy */
@@ -846,22 +857,19 @@ class WatchGuardXMLFile
 
         }
 
-        if ($format == 'json' || $format == 'json-pretty') {
-            $j = [];
-            foreach ($v as $row => $values) {
-                $j['setting'][$values['setting']] = $values;
-            }
-            print json_encode($j, $format == 'json-pretty' ? JSON_PRETTY_PRINT : NULL );
-            print "\n";
+        foreach ($v as $row => $values) {
+            $this->output['setting'][$values['setting']] = $values;
         }
     }
 
     public function printWarnings() {
 
         $warnings = 0;
-        $multiwan = new WatchGuardMultiWan($this->xmlfile->{'system-parameters'}->{'multi-wan'});
-        $sso = new WatchGuardSSO($this->xmlfile->{'system-parameters'}->{'single-sign-on'});
-        $misc = new WatchGuardMiscSettings($this->xmlfile->{'system-parameters'}->{'misc-global-setting'});
+
+        $multiwan = new WatchGuardMultiWan($this->xmlfile);
+        $sso = new WatchGuardSSO($this->xmlfile);
+        $misc = new WatchGuardMiscSettings($this->xmlfile);
+
 
         printf("\nXML-file Warnings\n\n");
         if ($misc->getAutoOrder()==0) {

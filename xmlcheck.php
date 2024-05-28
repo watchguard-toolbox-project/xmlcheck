@@ -99,7 +99,17 @@ if (isset($options["info"])) {
     if (isset($options['json-pretty'])) {
         $format = 'json-pretty';
     }
-    $policyxml->printInfo($format);
+$policyxml->printInfo($format);
+}
+
+if (isset($options['fwcheck'])) {
+    $policyxml->printInfo('prepare');
+
+    $flags = null;
+    if (isset($options['json-pretty'])) {
+        $flags= JSON_PRETTY_PRINT;
+    }
+    print (json_encode($policyxml->getOutput(), $flags));
 }
 
 if (isset($options["warnings"])) {

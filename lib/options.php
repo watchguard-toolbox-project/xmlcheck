@@ -47,6 +47,7 @@ $longopts = array(
     "info",
     "json",
     "json-pretty",
+    "fwcheck",
     "warnings",
     "version",
 );
@@ -87,6 +88,10 @@ function displayHelp() {
     --list-tunnels        lists all BOVPN (Gateway-)Tunnels
     --info                lists general info
     --warnings            lists warnings (differences to best practice)
+    
+    internal commands:
+    --fwcheck             output full information 
+                          used for communication with fwcheck     
         
     filters:
     these filters need --list-policy, may be used multiple times and together.
@@ -403,6 +408,11 @@ if (isset($options["json-pretty"])) {
     $myopts[]="--json-pretty";
 }
 
+if (isset($options["fwcheck"])) {
+    $options["fwcheck"] = true;
+    $optcount++;
+    $myopts[]="--fwcheck";
+}
 
 $xmlfile = "";
 if (   isset($options["infile"]) || isset($options["i"])
@@ -455,6 +465,7 @@ if (isset($options['listnats'])) $actions++;
 if (isset($options['listaliases'])) $actions++;
 if (isset($options['listtunnels'])) $actions++;
 if (isset($options['info'])) $actions++;
+if (isset($options['fwcheck'])) $actions++;
 if (isset($options['warnings'])) $actions++;
 
 if ($actions>1) {
