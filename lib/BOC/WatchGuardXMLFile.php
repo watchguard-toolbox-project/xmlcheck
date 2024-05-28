@@ -100,6 +100,7 @@ class WatchGuardXMLFile
      */
     private $allNats;
 
+    private $output = [];
     /**
      * WatchGuardXMLFile constructor.
      *
@@ -589,6 +590,8 @@ class WatchGuardXMLFile
      */
     public function listAllPolicies() {
         global $options;
+        // initialize outputarray;
+        $this->output = [];
 
         foreach ($this->allPolicies as $policyName => $policy) {
             /* @var WatchGuardPolicy $policy */
@@ -664,8 +667,28 @@ class WatchGuardXMLFile
             }
 
             if ($display==true) {
+                $this->output[] = $policy;
+            }
+        }
+
+        $json=null;
+        foreach ($this->output as $policy) {
+
+            if (isset ($options['json'])) {
+                $json['policies'][]= [
+                    "name" => $policy->getNamePretty(),
+                    "Comment" => $policy->getDescriptionPretty() ];
+            } else {
                 $policy->textout($this);
             }
+        }
+        $flags = NULL;
+        if (isset ($options['json-pretty'])) {
+            $flags = JSON_PRETTY_PRINT;
+        }
+        if (isset ($options['json'])) {
+            $json['policycount'] = count($json['policies']);
+            print json_encode($json, $flags);
         }
     }
 

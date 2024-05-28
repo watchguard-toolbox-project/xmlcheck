@@ -195,6 +195,25 @@ class WatchGuardPolicy extends WatchGuardObject
         return $ret;
     }
 
+    public function getDescription() {
+        return($this->obj->description->__toString());
+    }
+    public function getDescriptionPretty() {
+        // Policy added on 2016-11-17T16:41:07+01:00.
+        $desc = $this->getDescription();
+        if (preg_match("/Policy added on (\d\d\d\d-\d\d-\d\d)T\d\d:\d\d:\d\d[-+]\d\d:\d\d\./", $desc, $matches)) {
+            $desc=$matches[1];
+        };
+
+        return $desc;
+    }
+    public function getName() {
+        return($this->obj->name->__toString());
+    }
+    public function getNamePretty() {
+        return(preg_replace('/-00$/','', $this->getName()));
+    }
+
     /**
      * returns the enable/disable state of this policy
      * @return bool
@@ -230,6 +249,7 @@ class WatchGuardPolicy extends WatchGuardObject
             print "  Enabled: " . ($this->isEnabled() === true ? "yes" : "no") . "\n";
             print "  Action : " . $this->getAction() . "\n";
             print "  Tags   : " . $tags . "\n";
+            print "  Comment: " . $this->getDescriptionPretty() . "\n";
         }
 
         print "\n";
