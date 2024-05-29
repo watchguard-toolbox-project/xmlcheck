@@ -615,9 +615,10 @@ class WatchGuardXMLFile
     /**
      * lists (all) policies in this xmlfile
      */
-    public function prepareAllPolicies($index) {
+    public function prepareAllPolicies($index, $name='') {
         global $options;
 
+        if ($name=='') $name=$index;
         $this->output = [];
 
         foreach ($this->allPolicies as $policyName => $policy) {
@@ -706,7 +707,9 @@ class WatchGuardXMLFile
                     "name" => $policy->getNamePretty(),
                     "Comment" => $policy->getDescriptionPretty() ];
             }
-            $this->jsonoutput[$index."_count"]= count($this->jsonoutput[$index]);
+            $this->jsonoutput[$index."_count"]['name']=$name;
+            $this->jsonoutput[$index."_count"]['value']= count($this->jsonoutput[$index]);
+            $this->jsonoutput[$index."_count"]['info']='';
         }
     }
     /**
