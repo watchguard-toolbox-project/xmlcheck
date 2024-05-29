@@ -99,17 +99,21 @@ if (isset($options["info"])) {
     if (isset($options['json-pretty'])) {
         $format = 'json-pretty';
     }
-$policyxml->printInfo($format);
+    $policyxml->printInfo($format);
+    $policyxml->printJsonOutput($options);
 }
 
 if (isset($options['fwcheck'])) {
     $policyxml->printInfo('prepare');
 
-    $flags = null;
-    if (isset($options['json-pretty'])) {
-        $flags= JSON_PRETTY_PRINT;
-    }
-    print (json_encode($policyxml->getOutput(), $flags));
+    $options["disabled"] = true;
+    $policyxml->prepareAllPolicies('disabled_policies');
+
+    unset($options["disabled"]);
+    $policyxml->prepareAllPolicies('policies');
+
+    $options['json'] = true;
+    $policyxml->printJsonOutput($options);
 }
 
 if (isset($options["warnings"])) {

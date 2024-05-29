@@ -101,10 +101,16 @@ class WatchGuardXMLFile
     private $allNats;
 
     /**
-     * array for outputbuffering, used for --json etc.
+     * array for outputbuffering
      * @var array
      */
     private $output = [];
+
+    /**
+     * array for outputbuffering, used to create json object
+     * @var array
+     */
+    private $jsonoutput = [];
 
     /**
      * WatchGuardXMLFile constructor.
@@ -242,6 +248,14 @@ class WatchGuardXMLFile
     public function getOutput()
     {
         return $this->output;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJsonOutput()
+    {
+        return $this->jsonoutput;
     }
 
     /**
@@ -601,8 +615,10 @@ class WatchGuardXMLFile
     /**
      * lists (all) policies in this xmlfile
      */
-    public function listAllPolicies() {
+    public function prepareAllPolicies($index) {
         global $options;
+
+        $this->output = [];
 
         foreach ($this->allPolicies as $policyName => $policy) {
             /* @var WatchGuardPolicy $policy */
@@ -682,24 +698,35 @@ class WatchGuardXMLFile
             }
         }
 
-        $json=null;
-        foreach ($this->output as $policy) {
+        if ((isset($options['json']) || $options['json']==true) &&
+            (isset($options['fwcheck']) || $options['fwcheck']==true)) {
 
-            if (isset ($options['json'])) {
-                $json['policies'][]= [
+            foreach ($this->output as $policy) {
+                $this->jsonoutput[$index][]= [
                     "name" => $policy->getNamePretty(),
                     "Comment" => $policy->getDescriptionPretty() ];
-            } else {
+            }
+            $this->jsonoutput[$index."_count"]= count($this->jsonoutput[$index]);
+        }
+    }
+    /**
+     * lists (all) policies in this xmlfile
+     */
+    public function listAllPolicies($index='policies') {
+
+        global $options;
+
+        $this->prepareAllPolicies($index);
+
+        foreach ($this->output as $policy) {
+            if ((!isset($options['json']) || $options['json']==false) &&
+                (!isset($options['fwcheck']) || $options['fwcheck']==false)) {
                 $policy->textout($this);
             }
         }
-        $flags = NULL;
-        if (isset ($options['json-pretty'])) {
-            $flags = JSON_PRETTY_PRINT;
-        }
-        if (isset ($options['json'])) {
-            $json['policycount'] = count($json['policies']);
-            print json_encode($json, $flags);
+        if ((isset($options['json']) && $options['json']==true) ||
+            (isset($options['fwcheck']) && $options['fwcheck']==true)) {
+            $this->printJsonOutput($options);
         }
     }
 
@@ -858,7 +885,7 @@ class WatchGuardXMLFile
         }
 
         foreach ($v as $row => $values) {
-            $this->output['setting'][$values['setting']] = $values;
+            $this->jsonoutput['setting'][$values['setting']] = $values;
         }
     }
 
@@ -895,5 +922,18 @@ class WatchGuardXMLFile
         printf("\nSummary:\n");
         printf("%-30s%-49s\n", "Total Warnings:", $warnings);
         printf("\n\n");
+    }
+
+    /**
+     * @return array
+     */
+    public function printJsonOutput($options) {
+        $flags = null;
+        if (isset($options['json-pretty'])) {
+            $flags= JSON_PRETTY_PRINT;
+        }
+        if (isset($options['json'])) {
+            print (json_encode($this->getJsonOutput(), $flags));
+        }
     }
 }
