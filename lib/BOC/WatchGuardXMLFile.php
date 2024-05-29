@@ -702,6 +702,7 @@ class WatchGuardXMLFile
         if ((isset($options['json']) || $options['json']==true) &&
             (isset($options['fwcheck']) || $options['fwcheck']==true)) {
 
+            $this->jsonoutput[$index]= [];
             foreach ($this->output as $policy) {
                 $this->jsonoutput[$index][]= [
                     "name" => $policy->getNamePretty(),
