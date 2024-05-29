@@ -104,6 +104,7 @@ if (isset($options["info"])) {
 }
 
 if (isset($options['fwcheck'])) {
+    $options["json"] = true;
     $policyxml->printInfo('prepare');
 
     $options["disabled"] = true;
