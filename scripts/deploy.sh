@@ -13,7 +13,7 @@ then
   git fetch --all
   git reset --hard develop
   git pull
-  #echo "`git describe --tags`" > templates/version.tpl
+  echo "`git rev-parse --abbrev-ref HEAD`-`git describe --tags | cut -f 1-2 -d -`" > version.txt
 fi
 
 if [ "$1" == "merge" ]
@@ -30,7 +30,7 @@ if [ "$1" == "master" ]
 then
     cd $PRODUCTIONDIR
     git pull
-    #echo "`git describe --tags`" > templates/version.tpl
+    echo "`git rev-parse --abbrev-ref HEAD`-`git describe --tags | cut -f 1-2 -d -`" > version.txt
 fi
 
 if [ "$1" == "all" ]
