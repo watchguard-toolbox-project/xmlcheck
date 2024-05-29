@@ -706,7 +706,7 @@ class WatchGuardXMLFile
             foreach ($this->output as $policy) {
                 $this->jsonoutput[$index][]= [
                     "name" => $policy->getNamePretty(),
-                    "Comment" => $policy->getDescriptionPretty() ];
+                    "comment" => $policy->getDescriptionPretty() ];
             }
             $this->jsonoutput[$index."_count"]['name']=$name;
             $this->jsonoutput[$index."_count"]['value']= count($this->jsonoutput[$index]);
