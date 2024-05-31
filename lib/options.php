@@ -308,37 +308,46 @@ if (isset($options["filter-port"])) {
         $myopts[]=$filter;
     }
 }
-if (isset($options["filter-port-mail"])) {
+
+function filterPort($type) {
+    global $myopts;
+    global $filterport;
+
     if (!is_array($filterport)) {
         $filterport=[];
     }
-    $filterport[]="25/tcp";
-    $filterport[]="110/tcp";
-    $filterport[]="143/tcp";
-    $filterport[]="465/tcp";
-    $filterport[]="587/tcp";
-    $filterport[]="993/tcp";
-    $filterport[]="995/tcp";
-    $optcount++;
+
+    switch ($type) {
+        case "mail":
+            $filterport[]="25/tcp";
+            $filterport[]="110/tcp";
+            $filterport[]="143/tcp";
+            $filterport[]="465/tcp";
+            $filterport[]="587/tcp";
+            $filterport[]="993/tcp";
+            $filterport[]="995/tcp";
+            break;
+        case "web":
+            $filterport[]="80/tcp";
+            $filterport[]="443/tcp";
+            $filterport[]="443/udp";
+            break;
+    }
 
     foreach($filterport as $filter) {
         $myopts[]="--filter-port";
         $myopts[]=$filter;
     }
 }
-if (isset($options["filter-port-web"])) {
-    if (!is_array($filterport)) {
-        $filterport=[];
-    }
-    $filterport[]="80/tcp";
-    $filterport[]="443/tcp";
-    $filterport[]="443/udp";
-    $optcount++;
 
-    foreach($filterport as $filter) {
-        $myopts[]="--filter-port";
-        $myopts[]=$filter;
-    }
+if (isset($options["filter-port-mail"])) {
+    filterPort("mail");
+    $optcount++;
+}
+
+if (isset($options["filter-port-web"])) {
+    filterPort("web");
+    $optcount++;
 }
 
 if (isset($options["filter-from"])) {

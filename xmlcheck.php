@@ -113,6 +113,10 @@ if (isset($options['fwcheck'])) {
     unset($options["disabled"]);
     $policyxml->prepareAllPolicies('policies','Policies');
 
+    unset($options["disabled"]);
+    $policyxml->prepareAllPolicies('policies','Policies');
+
+
     $options['json'] = true;
     $policyxml->printJsonOutput($options);
 }
