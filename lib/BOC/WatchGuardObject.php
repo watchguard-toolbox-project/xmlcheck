@@ -33,15 +33,20 @@ class WatchGuardObject
      * @var property of this object (proberty value from xml file)
      */
     protected $property;
+    protected $jsonObject = [];
+    protected $objectType;
+
     /**
      * WatchGuardObject constructor.
      * @param SimpleXMLElement $element
      */
-    public function __construct(SimpleXMLElement $element)
+    public function __construct(SimpleXMLElement $element, $type='unspecified')
     {
         $this->obj = $element;
         $this->referencedBy = [];
         $this->refcount = 0;
+        $this->objectType = $type;
+
         if (isset($this->obj->property)) {
             $this->property = $this->obj->property->__toString();
         }
@@ -108,8 +113,7 @@ class WatchGuardObject
      * print the content of $this
      * @param $xmlfile WatchGuardXMLFile in which other objects can be found
      */
-    public function textout($xmlfile)
-    {
+    public function textout($xmlfile) {
 
         global $options;
 
@@ -132,6 +136,33 @@ class WatchGuardObject
      */
     public function debug(){
         print_r($this->obj);
+    }
+
+    public function prepareJson($xmlfile) {
+        $property="";
+        if (isset($this->property)) {
+            switch ($this->property) {
+                case 32:
+                    $property = '(Prop:' . $this->property . ":SNAT-ACTION?)";
+                    break;
+            }
+        }
+        $key = $this->objectType;
+        $info = '';
+        if ($this->refcount == 0) {
+            $key = $this->objectType.'_unused';
+            $info = ' (unused)';
+        }
+        $this->jsonObject[$key][] = array ( 'name' => $this->obj->name->__toString() . "$property$info",
+                                            'comment' => $this->obj->comment->__toString());
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJsonObject()
+    {
+        return $this->jsonObject;
     }
 
 }

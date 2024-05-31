@@ -25,9 +25,9 @@ class WatchGuardTag extends WatchGuardObject
      * WatchGuardTag constructor.
      * @param SimpleXMLElement $element
      */
-    public function __construct(SimpleXMLElement $element)
+    public function __construct(SimpleXMLElement $element, $objectType)
     {
-        parent::__construct($element);
+        parent::__construct($element, $objectType);
     }
 
 }

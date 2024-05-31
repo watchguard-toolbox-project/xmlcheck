@@ -209,7 +209,7 @@ class WatchGuardXMLFile
 
         if ($this->xmlfile->{'policy-tag-list'}->children() != null) {
             foreach ($this->xmlfile->{'policy-tag-list'}->children() as $tag) {
-                $this->allTags[$tag->name->__toString()] = new WatchGuardTag($tag);
+                $this->allTags[$tag->name->__toString()] = new WatchGuardTag($tag, 'tags');
             }
         }
 
@@ -738,8 +738,41 @@ class WatchGuardXMLFile
      * lists (all) tags in this xmlfile
      */
     public function listAllTags() {
+        global $options;
+
+        $type='tags';
+        $this->jsonoutput[$type]=[];
+        $this->jsonoutput[$type.'_unused']=[];
+
         foreach ($this->allTags as $tagName => $tag) {
-            $tag->textout($this);
+            if ((isset($options['json']) && $options['json']==true) ||
+            (isset($options['fwcheck']) && $options['fwcheck']==true)) {
+                $tag->prepareJson($tag, $type);
+                $arr = $tag->getJsonObject();
+                if (isset($arr[$type])) {
+                    $this->jsonoutput[$type]=array_merge($this->jsonoutput[$type],$arr[$type]);
+                }
+                if (isset($arr[$type.'_unused'])) {
+                    // unused show up on all aliases as well
+                    $this->jsonoutput[$type]=array_merge($this->jsonoutput[$type],$arr[$type.'_unused']);
+                    $this->jsonoutput[$type.'_unused']=array_merge($this->jsonoutput[$type.'_unused'],$arr[$type.'_unused']);
+                }
+            } else {
+                $tag->textout($this);
+            }
+        }
+        if ((isset($options['json']) && $options['json']==true) ||
+            (isset($options['fwcheck']) && $options['fwcheck']==true)) {
+            $this->jsonoutput[$type.'_count']['name'] = 'Tags';
+            $this->jsonoutput[$type.'_count']['value'] = count($this->jsonoutput[$type]);
+            $this->jsonoutput[$type.'_count']['info'] = '';
+            $this->jsonoutput[$type.'_unused_count']['name'] = 'Unused Tags';
+            $this->jsonoutput[$type.'_unused_count']['value'] = count($this->jsonoutput[$type.'_unused']);
+            $this->jsonoutput[$type.'_unused_count']['info'] = '';
+        }
+
+        if (!isset($options['fwcheck']) || $options['fwcheck']==false) {
+            $this->printJsonOutput($options);
         }
     }
 
