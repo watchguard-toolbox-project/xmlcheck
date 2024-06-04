@@ -561,16 +561,72 @@ class WatchGuardXMLFile
      **/
 
     /**
-     * lists (all) aliases in this xmlfile
+     * prepare (all) aliases in this xmlfile
      */
-    public function listAllAliases() {
+    public function prepareAllAliases($index,$name="") {
+        global $options;
+
+        if ($name=="") $name=$index;
+        $this->output = [];
+
         foreach ($this->allAliases as $aliasName => $alias) {
             // ignore referenced aliases ending .1.from or .1.to or .from.[1234]
             // as these are refs to policies...
             if (preg_match("/(\.1\.(from|to)|\.from\.\d+)$/", $aliasName)) {
                 continue;
             }
-            $alias->textout($this);
+            $this->output[] = $alias;
+        }
+
+        if ((isset($options['json']) && $options['json']==true) ||
+            (isset($options['fwcheck']) && $options['fwcheck']==true)) {
+
+            $this->jsonoutput[$index]= [];
+            $this->jsonoutput[$index.'_unused']= [];
+            foreach ($this->output as $alias) {
+                if (preg_match('/(Built-in alias)/',$alias->getDescriptionPretty())) {
+                    continue;
+                }
+                if (preg_match('/\.(from|to|snat)$/',$alias->getNamePretty())) {
+                    continue;
+                }
+                $unused="";
+                if ($alias->isUnused()) {
+                    $unused=" (unused)";
+                    $this->jsonoutput[$index.'_unused'][]= [
+                        "name" => $alias->getNamePretty().$unused,
+                        "comment" => $alias->getDescriptionPretty() ];
+                }
+                $this->jsonoutput[$index][]= [
+                    "name" => $alias->getNamePretty().$unused,
+                    "comment" => $alias->getDescriptionPretty() ];
+
+            }
+            $this->jsonoutput[$index."_count"]['name']=$name;
+            $this->jsonoutput[$index."_count"]['value']= count($this->jsonoutput[$index]);
+            $this->jsonoutput[$index."_count"]['info']='';
+            $this->jsonoutput[$index."_unused_count"]['name']=$name;
+            $this->jsonoutput[$index."_unused_count"]['value']= count($this->jsonoutput[$index.'_unused']);
+            $this->jsonoutput[$index."_unused_count"]['info']='';
+        }
+    }
+
+    /**
+     * lists (all) aliases in this xmlfile
+     */
+    public function listAllAliases() {
+
+        global $options;
+
+        $this->prepareAllAliases('aliases');
+
+        if ((isset($options['json']) && $options['json']==true) ||
+            (isset($options['fwcheck']) && $options['fwcheck']==true)) {
+            // do nothing;
+        } else {
+            foreach ($this->output as $alias) {
+                $alias->textout($this);
+            }
         }
     }
 
@@ -717,6 +773,7 @@ class WatchGuardXMLFile
      * lists (all) policies in this xmlfile
      */
     public function listAllPolicies($index='policies') {
+
 
         global $options;
 

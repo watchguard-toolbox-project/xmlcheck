@@ -68,7 +68,7 @@ class WatchGuardObject
      */
     protected function verbosetextout($xmlfile) {
 
-        if ($this->refcount > 0) {
+        if ($this->isReferenced()) {
 
             print"\n  References: \n";
 
@@ -98,7 +98,7 @@ class WatchGuardObject
                     break;
             }
         }
-        if ($this->refcount == 0) {
+        if ($this->isUnused()) {
             print $this->obj->name->__toString() . "$property (unused)\n";
         } else {
             print $this->obj->name->__toString() . "$property\n";
@@ -109,6 +109,13 @@ class WatchGuardObject
         }
     }
 
+    public function isUnused() {
+        return $this->refcount == 0 ? true : false ;
+    }
+    public function isReferenced() {
+        return $this->refcount > 0 ? true : false ;
+    }
+
     /**
      * print the content of $this
      * @param $xmlfile WatchGuardXMLFile in which other objects can be found
@@ -117,7 +124,7 @@ class WatchGuardObject
 
         global $options;
 
-        if ($this->refcount == 0) {
+        if ($this->isUnused()) {
 
             $this->printName($xmlfile);
 
@@ -149,7 +156,7 @@ class WatchGuardObject
         }
         $key = $this->objectType;
         $info = '';
-        if ($this->refcount == 0) {
+        if ($this->isUnused()) {
             $key = $this->objectType.'_unused';
             $info = ' (unused)';
         }
@@ -163,6 +170,19 @@ class WatchGuardObject
     public function getJsonObject()
     {
         return $this->jsonObject;
+    }
+
+    public function getNamePretty() {
+        return(preg_replace('/-00$/','', $this->getName()));
+    }
+    public function getName() {
+        return($this->obj->name->__toString());
+    }
+    public function getDescriptionPretty() {
+        return(preg_replace('/-00$/','', $this->getDescription()));
+    }
+    public function getDescription() {
+        return($this->obj->description->__toString());
     }
 
 }

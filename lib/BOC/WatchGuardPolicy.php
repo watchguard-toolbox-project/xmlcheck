@@ -195,23 +195,37 @@ class WatchGuardPolicy extends WatchGuardObject
         return $ret;
     }
 
-    public function getDescription() {
-        return($this->obj->description->__toString());
-    }
     public function getDescriptionPretty() {
         // Policy added on 2016-11-17T16:41:07+01:00.
+        static $month = [
+            "Jan" => "01",
+            "Feb" => "02",
+            "Mar" => "03",
+            "Apr" => "04",
+            "May" => "05",
+            "Jun" => "06",
+            "Jul" => "07",
+            "Aug" => "08",
+            "Sep" => "09",
+            "Oct" => "10",
+            "Nov" => "11",
+            "Dec" => "12",
+        ];
+
         $desc = $this->getDescription();
         if (preg_match("/Policy added on (\d\d\d\d-\d\d-\d\d)T\d\d:\d\d:\d\d[-+]\d\d:\d\d\./", $desc, $matches)) {
             $desc=$matches[1];
         };
+        if (preg_match("/Policy added on (Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) ".
+                              "(\d\d) \d\d:\d\d:\d\d [A-Z]{3,4} (\d\d\d\d)\./", $desc, $matches)) {
+            if (isset($month[$matches[2]])) {
+                $desc=$matches[4]."-".$month[$matches[2]]."-".$matches[3];
+            } else {
+                $desc=$matches[4]."-".$matches[2]."-".$matches[3];
+            }
+        };
 
         return $desc;
-    }
-    public function getName() {
-        return($this->obj->name->__toString());
-    }
-    public function getNamePretty() {
-        return(preg_replace('/-00$/','', $this->getName()));
     }
 
     /**

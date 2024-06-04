@@ -118,6 +118,8 @@ if (isset($options['fwcheck'])) {
 
     $policyxml->listAllTags();
 
+    $policyxml->listAllAliases();
+
     $options['json'] = true;
     $policyxml->printJsonOutput($options);
 }
