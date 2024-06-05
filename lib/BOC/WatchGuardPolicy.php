@@ -34,6 +34,12 @@ class WatchGuardPolicy extends WatchGuardObject
     private $tags;
 
     /**
+     * stores firewall action Allow/Block/Reject
+     * @var string
+     */
+    public $firewallAction;
+
+    /**
      * WatchGuardPolicy constructor.
      * @param SimpleXMLElement $element
      */
@@ -188,6 +194,9 @@ class WatchGuardPolicy extends WatchGuardObject
             case "2":
                 $ret = "Deny";
                 break;
+            case "4":
+                $ret = "Proxy";
+                break;
             default:
                 $ret = "???" . $this->obj->firewall->__toString() . "???";
                 break;
@@ -281,6 +290,22 @@ class WatchGuardPolicy extends WatchGuardObject
         if (isset($options["verbose"])) {
             $this->verbosetextout($xmlfile);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirewallAction()
+    {
+        return $this->firewallAction;
+    }
+
+    /**
+     * @param string $firewallAction
+     */
+    public function setFirewallAction($firewallAction)
+    {
+        $this->firewallAction = $firewallAction;
     }
 
 }
