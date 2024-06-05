@@ -238,6 +238,8 @@ class WatchGuardXMLFile
         foreach ($this->xmlfile->{'policy-list'}->{'policy'} as $policy) {
             $policyName = $policy->name->__toString();
             $this->allPolicies[$policyName] = new WatchGuardPolicy($policy);
+            $prettyName = $this->allPolicies[$policyName]->getNamePretty();
+            $this->allPolicies[$policyName]->setFirewallAction($this->findPolicyAction($prettyName));
             $this->allPolicies[$policyName]->getReferencedAliases();
         }
 
@@ -382,7 +384,7 @@ class WatchGuardXMLFile
             if (preg_match('/(.+)\.1\.(from|to)$/', $aliasName,$matches)) {
                 $type = "policy:$matches[2]";
                 $aliasName = $matches[1];
-                $policyName = $aliasName . "-00";
+                $policyName = $aliasName;
                 // get all referenced Aliases
                 $referencedAliases = $alias->getReferencedAliases();
                 switch ($matches[2]) {
@@ -579,6 +581,23 @@ class WatchGuardXMLFile
 
     }
 
+
+    /**
+     * finds policy action
+     *
+     * actions are stored in <policy-list> AND in <abs-policy-list>
+     * for whatever reason... so loop over abs-policy-list also for tags.
+     *
+     */
+    public function findPolicyAction ($policyName) {
+        foreach ($this->xmlfile->{'abs-policy-list'}->{'abs-policy'} as $policy) {
+            if ($policy->name->__toString() == $policyName) {
+                // print_r($policyName);
+               return $policy->firewall->__toString();
+            }
+        }
+    }
+
     /**
      * stores policy references to services
      */
@@ -766,8 +785,6 @@ class WatchGuardXMLFile
                 }
             } elseif (count($this->policyFromFilter)>0 || count($this->policyToFilter)>0) {
                 // search for to OR from
-                print_r($this->policyFromFilter);
-                print_r($this->policyToFilter);
                 if (!($foundfrom || $foundto)) {
                     $display = false;
                 }
@@ -781,6 +798,7 @@ class WatchGuardXMLFile
                     // this is checked before values are pushed to $namefilter
                     if (preg_match($namefilter, $policyName)) {
                         $found = true;
+                        print_r($policy);
                     }
                 }
                 if (!$found) {
@@ -849,7 +867,9 @@ class WatchGuardXMLFile
             foreach ($this->output as $policy) {
                 $this->jsonoutput[$index][]= [
                     "name" => $policy->getNamePretty(),
-                    "comment" => $policy->getDescriptionPretty() ];
+                    "comment" => $policy->getDescriptionPretty(),
+                    "action" => $policy->getAction(),
+                    "firewall" => $policy->getFirewallAction() ];
             }
             $this->jsonoutput[$index."_count"]['name']=$name;
             $this->jsonoutput[$index."_count"]['value']= count($this->jsonoutput[$index]);

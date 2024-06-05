@@ -137,6 +137,11 @@ if (isset($options['fwcheck'])) {
     $policyxml->setPolicyNameFilter(array('/VERY_BAD/'));
     $policyxml->prepareAllPolicies('very_bad_policies','VERY BAD Policies (matched by name)');
 
+    // clear name filter
+    $policyxml->setPolicyNameFilter(array());
+
+    $policyxml->setPolicyActionFilter('Deny');
+    $policyxml->prepareAllPolicies('Deny_policies','Deny Policies (action=Deny)');
 
     $options['json'] = true;
     $policyxml->printJsonOutput($options);
