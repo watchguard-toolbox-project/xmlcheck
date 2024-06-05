@@ -23,7 +23,7 @@ class WatchGuardService extends WatchGuardObject
      * @param SimpleXMLElement $element
      */
     public function __construct(SimpleXMLElement $element) {
-        parent::__construct($element);
+        parent::__construct($element, "types");
 
         /**
          * all WatchGuard default services will be referenced automatically
@@ -31,6 +31,7 @@ class WatchGuardService extends WatchGuardObject
          * and thus deleteable services.
          */
         $defaultServices = array(
+            "Any",
             "Allow Hotspot Session Mgmt",
             "AOL",
             "Archie",
@@ -165,6 +166,7 @@ class WatchGuardService extends WatchGuardObject
             "WG-SmallOffice-Mgmt",
             "WG-TDR-Host-Sensor",
             "WG-WebBlocker",
+            "WG-PAC-File-Download",
             "WHOIS",
             "WinFrame",
             "X11",
@@ -173,6 +175,7 @@ class WatchGuardService extends WatchGuardObject
         if (in_array($element->{'name'},$defaultServices)) {
             // Services is WatchGuard default
             $this->storeReference("WatchGuard Default","service");
+            $this->setDefault(true);
         }
 
         foreach ($this->obj->{'service-item'}->children() as $member) {
