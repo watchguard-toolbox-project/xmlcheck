@@ -646,10 +646,10 @@ class WatchGuardXMLFile
                     "comment" => $alias->getDescriptionPretty() ];
 
             }
-            $this->jsonoutput[$index."_count"]['name']=$name;
+            $this->jsonoutput[$index."_count"]['name']='Aliases';
             $this->jsonoutput[$index."_count"]['value']= count($this->jsonoutput[$index]);
             $this->jsonoutput[$index."_count"]['info']='';
-            $this->jsonoutput[$index."_unused_count"]['name']=$name;
+            $this->jsonoutput[$index."_unused_count"]['name']='Unused Aliases';
             $this->jsonoutput[$index."_unused_count"]['value']= count($this->jsonoutput[$index.'_unused']);
             $this->jsonoutput[$index."_unused_count"]['info']='';
         }
