@@ -634,6 +634,9 @@ class WatchGuardXMLFile
                 if (preg_match('/\.(from|to|snat)$/',$alias->getNamePretty())) {
                     continue;
                 }
+                if (preg_match('/^(Any|Any-(BOVPN|MUVPN|Trusted|Optional|External|Multicast)|Firebox)$/',$alias->getNamePretty())) {
+                    continue;
+                }
                 $unused="";
                 if ($alias->isUnused()) {
                     $unused=" (unused)";
@@ -921,6 +924,11 @@ class WatchGuardXMLFile
      * lists (all) services in this xmlfile
      */
     public function listAllServices() {
+        global $options;
+        $type='types';
+        $this->jsonoutput[$type]=[];
+        $this->jsonoutput[$type.'_unused']=[];
+
         foreach ($this->allServices as $serviceName => $service) {
             /** @var WatchGuardService $service */
             $display=true;
@@ -948,9 +956,43 @@ class WatchGuardXMLFile
                     $display=false;
                 }
             }
-            if ($display==true) {
-                $service->textout($this);
+
+            if ($service->isDefault()) {
+                $display=false;
             }
+
+            // valid type?
+            if ($display==true) {
+                if ((isset($options['json']) && $options['json']==true) ||
+                    (isset($options['fwcheck']) && $options['fwcheck']==true)) {
+                    $service->prepareJson($service);
+                    $arr = $service->getJsonObject();
+                    if (isset($arr[$type])) {
+                        $this->jsonoutput[$type]=array_merge($this->jsonoutput[$type],$arr[$type]);
+                    }
+                    if (isset($arr[$type.'_unused'])) {
+                        // unused show up on all aliases as well
+                        $this->jsonoutput[$type]=array_merge($this->jsonoutput[$type],$arr[$type.'_unused']);
+                        $this->jsonoutput[$type.'_unused']=array_merge($this->jsonoutput[$type.'_unused'],$arr[$type.'_unused']);
+                    }
+                } else {
+                    $service->textout($this);
+                }
+            }
+        }
+        if ((isset($options['json']) && $options['json']==true) ||
+            (isset($options['fwcheck']) && $options['fwcheck']==true)) {
+            $this->jsonoutput[$type.'_count']['name'] = 'Types';
+            $this->jsonoutput[$type.'_count']['value'] = count($this->jsonoutput[$type]);
+            $this->jsonoutput[$type.'_count']['info'] = '';
+            $this->jsonoutput[$type.'_unused_count']['name'] = 'Unused Types';
+            $this->jsonoutput[$type.'_unused_count']['value'] = count($this->jsonoutput[$type.'_unused']);
+            $this->jsonoutput[$type.'_unused_count']['info'] = '';
+        }
+
+        // if --list-tpyes is called w/ --json
+        if (!isset($options['fwcheck']) || $options['fwcheck']==false) {
+            $this->printJsonOutput($options);
         }
     }
 
@@ -1103,7 +1145,7 @@ class WatchGuardXMLFile
     }
 
     /**
-     * @return array
+     * @return void
      */
     public function printJsonOutput($options) {
         $flags = null;

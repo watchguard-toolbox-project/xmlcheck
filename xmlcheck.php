@@ -123,6 +123,8 @@ if (isset($options['fwcheck'])) {
 
     $policyxml->listAllAliases();
 
+    $policyxml->listAllServices();
+
     $policyxml->setPolicyNameFilter(array('/TEMP/'));
     $policyxml->prepareAllPolicies('temp_policies','Temp Policies (matched by name)');
 
