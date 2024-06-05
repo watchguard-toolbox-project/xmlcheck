@@ -103,11 +103,11 @@ function displayHelp() {
     --filter-exclude-type type    only show policies not matching type 
     --filter-to   alias           only show policies using alias in to
     --filter-from alias           only show policies using alias in from
-    --filter-action action        only show policies using action (Deny|Allow)
+    --filter-action action        only show policies using action (Deny|Allow|Proxy)
     --filter-tag tag              only show policies using tag
     
     these filters need --list-types, may be used multiple times and together.
-    --filter-type action     only show types using action (Deny|Allow)
+    --filter-type type       only show types matching type
     --filter-port port       only show types using port (e.g. '25/tcp')
     
     special filters
@@ -467,8 +467,13 @@ if (isset($options["filter-action"])) {
         displayError("filter-action may only be used once.");
         exit;
     } else {
-        $filteraction=$options['filter-action'];
-        $optcount+=2;
+        if (in_array($options['filter-action'], [ 'Allow', 'Deny', 'Proxy' ])) {
+            $filteraction=$options['filter-action'];
+            $optcount+=2;
+        } else {
+            displayError("filter-action may only be one of Deny|Allow|Proxy.");
+            exit;
+        }
     }
 }
 
