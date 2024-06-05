@@ -36,6 +36,7 @@ class WatchGuardObject
     protected $jsonObject = [];
     protected $objectType;
 
+    protected $default = false;
     /**
      * WatchGuardObject constructor.
      * @param SimpleXMLElement $element
@@ -183,6 +184,22 @@ class WatchGuardObject
     }
     public function getDescription() {
         return($this->obj->description->__toString());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * @param bool $default
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
     }
 
 }
