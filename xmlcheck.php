@@ -119,12 +119,22 @@ if (isset($options['fwcheck'])) {
     unset($options["disabled"]);
     $policyxml->prepareAllPolicies('policies','Policies');
 
-    unset($options["disabled"]);
-    $policyxml->prepareAllPolicies('policies','Policies');
-
     $policyxml->listAllTags();
 
     $policyxml->listAllAliases();
+
+    $policyxml->setPolicyNameFilter(array('/TEMP/'));
+    $policyxml->prepareAllPolicies('temp_policies','Temp Policies (matched by name)');
+
+    $policyxml->setPolicyNameFilter(array('/XXX/'));
+    $policyxml->prepareAllPolicies('xxx_policies','XXX Policies (matched by name)');
+
+    $policyxml->setPolicyNameFilter(array('/BAD/'));
+    $policyxml->prepareAllPolicies('bad_policies','BAD Policies (matched by name)');
+
+    $policyxml->setPolicyNameFilter(array('/VERY_BAD/'));
+    $policyxml->prepareAllPolicies('very_bad_policies','VERY BAD Policies (matched by name)');
+
 
     $options['json'] = true;
     $policyxml->printJsonOutput($options);
