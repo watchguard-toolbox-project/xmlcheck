@@ -28,6 +28,7 @@ $longopts = array(
     "list-types",
     "list-tags",
     "list-nats",
+    "filter-name:",
     "filter-type:",
     "filter-port:",
     "filter-port-mail",
@@ -37,6 +38,7 @@ $longopts = array(
     "filter-from:",
     "filter-action:",
     "filter-exclude-type:",
+    "filter-exclude-name:",
     "alias:",
     "help",
     "verbose",
@@ -95,13 +97,16 @@ function displayHelp() {
         
     filters:
     these filters need --list-policy, may be used multiple times and together.
-    --filter-type type       only show policies having type 
-    --filter-to   alias      only show policies using alias in to
-    --filter-from alias      only show policies using alias in from
-    --filter-action action   only show policies using action (Deny|Allow)
-    --filter-tag tag         only show policies using tag
+    --filter-name name            only show policies matching name (regexp)
+    --filter-exclude-name name    only show policies not matching name (regexp)
+    --filter-type type            only show policies matching type 
+    --filter-exclude-type type    only show policies not matching type 
+    --filter-to   alias           only show policies using alias in to
+    --filter-from alias           only show policies using alias in from
+    --filter-action action        only show policies using action (Deny|Allow)
+    --filter-tag tag              only show policies using tag
     
-    these filters need --list-type, may be used multiple times and together.
+    these filters need --list-types, may be used multiple times and together.
     --filter-type action     only show types using action (Deny|Allow)
     --filter-port port       only show types using port (e.g. '25/tcp')
     
@@ -263,6 +268,69 @@ if (isset($options["filter-type"])) {
         $filtertype[$i]=preg_replace("/°/"," ", $filtertype[$i]);
     }
 }
+
+if (isset($options["filter-name"])) {
+    $filtername=[];
+    if (is_array($options['filter-name'])) {
+        foreach ($options['filter-name'] as $filter) {
+            if (isPregValid($filter)) {
+                $filtername[]=$filter;
+            } else {
+                print " Error: '" . $filter . "' is not a valid regexp.\n";
+                exit;
+            }
+        }
+        $optcount+= (2* count($filtername));
+    } else {
+        if (isPregValid($options['filter-name'])) {
+            $filtername[]=$options['filter-name'];
+            $optcount+=2;
+        } else {
+            print " Error: '" . $options['filter-name'] . "' is not a valid regexp.\n";
+            exit;
+        }
+    }
+    foreach($filtername as $filter) {
+        $myopts[]="--filter-name";
+        $myopts[]=$filter;
+    }
+    // workaround blank behaviour in BASH and VARIABLES
+    for ($i=0; $i<count($filtername); $i++) {
+        $filtername[$i]=preg_replace("/°/"," ", $filtername[$i]);
+    }
+}
+
+if (isset($options["filter-exclude-name"])) {
+    $filterexcludename=[];
+    if (is_array($options['filter-exclude-name'])) {
+        foreach ($options['filter-exclude-name'] as $filter) {
+            if (isPregValid($filter)) {
+                $filterexcludename[]=$filter;
+            } else {
+                print " Error: '" . $filter . "' is not a valid regexp.\n";
+                exit;
+            }
+        }
+        $optcount+= (2* count($filterexcludename));
+    } else {
+        if (isPregValid($options['filter-exclude-name'])) {
+            $filterexcludename[]=$options['filter-exclude-name'];
+            $optcount+=2;
+        } else {
+            print " Error: '" . $options['filter-exclude-name'] . "' is not a valid regexp.\n";
+            exit;
+        }
+    }
+    foreach($filterexcludename as $filter) {
+        $myopts[]="--filter-exclude-name";
+        $myopts[]=$filter;
+    }
+    // workaround blank behaviour in BASH and VARIABLES
+    for ($i=0; $i<count($filterexcludename); $i++) {
+        $filterexcludename[$i]=preg_replace("/°/"," ", $filterexcludename[$i]);
+    }
+}
+
 
 if (isset($options["filter-tag"])) {
     $filtertag=[];
@@ -463,6 +531,11 @@ if (isset($filtertype) && is_array($filtertype) && !isset($options['listpolicies
 }
 if (isset($filterport) && is_array($filterport) && !isset($options['listservices'])) {
     displayError("--filter-port needs --list-types");
+    exit;
+}
+if ((isset($filtername) && is_array($filtername)) &&
+    !(isset($options['listpolicies']) || isset($options['listservices']) || isset($options['fwcheck']))) {
+    displayError("--filter-name needs --list-policies, --list-type or --fwcheck");
     exit;
 }
 // check if too much actions:

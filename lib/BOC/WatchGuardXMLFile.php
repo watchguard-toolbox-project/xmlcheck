@@ -58,6 +58,11 @@ class WatchGuardXMLFile
      */
     private $policyTagFilter;
     /**
+     * array for filter-exclude-name
+     * @var array
+     */
+    private $policyExcludeNameFilter;
+    /**
      * array for filter-exclude-type
      * @var array
      */
@@ -67,6 +72,11 @@ class WatchGuardXMLFile
      * @var array
      */
     private $typePortFilter;
+    /**
+     * array for filter-name
+     * @var array
+     */
+    private $policyNameFilter;
     /**
      * array for filter-from
      * @var array
@@ -143,12 +153,14 @@ class WatchGuardXMLFile
 
         // initialize filters as arrays
         // don't initialize policyActionFilter as it is no array.
+        $this->policyNameFilter = [];
         $this->policyFromFilter = [];
         $this->policyToFilter = [];
         $this->policyTypeFilter = [];
         $this->policyTagFilter = [];
 
         $this->policyExcludeTypeFilter = [];
+        $this->policyExcludeNameFilter = [];
 
         // initialize aliases, services and tags
         $this->getAllAliases();
@@ -256,6 +268,38 @@ class WatchGuardXMLFile
     public function getJsonOutput()
     {
         return $this->jsonoutput;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPolicyNameFilter()
+    {
+        return $this->policyNameFilter;
+    }
+
+    /**
+     * @param array $policyNameFilter
+     */
+    public function setPolicyNameFilter($policyNameFilter)
+    {
+        $this->policyNameFilter = $policyNameFilter;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPolicyExcludeNameFilter()
+    {
+        return $this->policyExcludeNameFilter;
+    }
+
+    /**
+     * @param array $policyExcludeNameFilter
+     */
+    public function setPolicyExcludeNameFilter($policyExcludeNameFilter)
+    {
+        $this->policyExcludeNameFilter = $policyExcludeNameFilter;
     }
 
     /**
@@ -713,12 +757,51 @@ class WatchGuardXMLFile
                 }
             }
             if (count($this->policyFromFilter)>0 && count($this->policyToFilter)>0) {
+                // search for From and To
                 if (!($foundfrom && $foundto)) {
                     $display=false;
                 }
             } elseif (count($this->policyFromFilter)>0 || count($this->policyToFilter)>0) {
+                // search for to OR from
+                print_r($this->policyFromFilter);
+                print_r($this->policyToFilter);
                 if (!($foundfrom || $foundto)) {
                     $display = false;
+                }
+            }
+
+            if (count($this->policyNameFilter)>0) {
+                // suppress output no name matches
+                $found = false;
+                foreach ($this->policyNameFilter as $namefilter) {
+                    // $namefilter array elements must be valid regexp,
+                    // this is checked before values are pushed to $namefilter
+                    if (preg_match($namefilter, $policyName)) {
+                        $found = true;
+                    }
+                }
+                if (!$found) {
+                    $display = false;
+                }
+            }
+
+            if (count($this->policyExcludeNameFilter)>0) {
+                // suppress output where name matches
+                foreach ($this->policyExcludeNameFilter as $namefilter) {
+                    // $namefilter array elements must be valid regexp,
+                    // this is checked before values are pushed to $namefilter
+                    if (preg_match($namefilter, $policyName)) {
+                        $display = false;
+                    }
+                }
+            }
+
+            if (count($this->policyFromFilter)>0) {
+                // suppress output if none of all From aliases match filter-from
+                foreach ($policy->getAliasesFrom() as $alias) {
+                    if (in_array($alias, $this->policyFromFilter)) {
+                        $foundfrom = true;
+                    };
                 }
             }
 
@@ -731,6 +814,7 @@ class WatchGuardXMLFile
 
                 $display = false;
             }
+
 
             if (count($this->getPolicyExcludeTypeFilter())>0) {
                 if (in_array($policy->getService(), $this->getPolicyExcludeTypeFilter())) {
@@ -755,8 +839,8 @@ class WatchGuardXMLFile
             }
         }
 
-        if ((isset($options['json']) || $options['json']==true) &&
-            (isset($options['fwcheck']) || $options['fwcheck']==true)) {
+        if ( !((isset($options['json']) && $options['json']==false) ||
+               (isset($options['fwcheck']) && $options['fwcheck']==false)) ) {
 
             $this->jsonoutput[$index]= [];
             foreach ($this->output as $policy) {
@@ -852,7 +936,7 @@ class WatchGuardXMLFile
                     $display=false;
                 }
             }
-            if (count($this->typePortFilter)>0) {
+            if (isset($this->typePortFilter) && count($this->typePortFilter)>0) {
                 // suppress output if type not in typefilter
                 $found=false;
                 foreach($service->getServicePorts() as $port) {

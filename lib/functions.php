@@ -11,3 +11,12 @@
  */
 $dummy="";
 unset($dummy);
+
+function isPregValid($regexp) {
+    $valid = true;
+    if (@preg_match($regexp, "teststring") === false) {
+        // regexp failed and is likely invalid
+        $valid = false;
+    }
+    return $valid;
+}

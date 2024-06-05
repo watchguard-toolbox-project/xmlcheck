@@ -60,6 +60,12 @@ if (isset($options["listpolicies"])) {
     if (isset($filterto) && is_array($filterto)) {
         $policyxml->setPolicyToFilter($filterto);
     }
+    if (isset($filtername) && is_array($filtername)) {
+        $policyxml->setPolicyNameFilter($filtername);
+    }
+    if (isset($filterexcludename) && is_array($filterexcludename)) {
+        $policyxml->setPolicyExcludeNameFilter($filterexcludename);
+    }
     if (isset($filteraction)) {
         $policyxml->setPolicyActionFilter($filteraction);
     }
