@@ -798,7 +798,6 @@ class WatchGuardXMLFile
                     // this is checked before values are pushed to $namefilter
                     if (preg_match($namefilter, $policyName)) {
                         $found = true;
-                        print_r($policy);
                     }
                 }
                 if (!$found) {

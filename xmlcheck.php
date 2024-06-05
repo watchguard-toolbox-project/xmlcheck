@@ -141,7 +141,7 @@ if (isset($options['fwcheck'])) {
     $policyxml->setPolicyNameFilter(array());
 
     $policyxml->setPolicyActionFilter('Deny');
-    $policyxml->prepareAllPolicies('Deny_policies','Deny Policies (action=Deny)');
+    $policyxml->prepareAllPolicies('deny_policies','Deny Policies (action=Deny)');
 
     $options['json'] = true;
     $policyxml->printJsonOutput($options);
