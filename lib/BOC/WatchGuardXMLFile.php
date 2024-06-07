@@ -867,6 +867,7 @@ class WatchGuardXMLFile
                 $this->jsonoutput[$index][]= [
                     "name" => $policy->getNamePretty(),
                     "comment" => $policy->getDescriptionPretty(),
+                    "tags" => $policy->getTags(),
                     "action" => $policy->getAction(),
                     "firewall" => $policy->getFirewallAction() ];
             }
