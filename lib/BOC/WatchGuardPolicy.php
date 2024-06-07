@@ -223,16 +223,35 @@ class WatchGuardPolicy extends WatchGuardObject
 
         $desc = $this->getDescription();
         if (preg_match("/Policy added on (\d\d\d\d-\d\d-\d\d)T\d\d:\d\d:\d\d[-+]\d\d:\d\d\./", $desc, $matches)) {
-            $desc=$matches[1];
+            $desc="Created: ".$matches[1];
         };
         if (preg_match("/Policy added on (Mon|Tue|Wed|Thu|Fri|Sat|Sun) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) ".
-                              "(\d\d) \d\d:\d\d:\d\d [A-Z]{3,4} (\d\d\d\d)\./", $desc, $matches)) {
+                              "(\d\d) \d\d:\d\d:\d\d [A-Z]{3,4} (\d\d\d\d)\./", $desc, $matches)) {{}
             if (isset($month[$matches[2]])) {
-                $desc=$matches[4]."-".$month[$matches[2]]."-".$matches[3];
+                $desc="Created: ".$matches[4]."-".$month[$matches[2]]."-".$matches[3];
             } else {
-                $desc=$matches[4]."-".$matches[2]."-".$matches[3];
+                $desc="Created: ".$matches[4]."-".$matches[2]."-".$matches[3];
             }
         };
+
+        if ($desc == "") {
+            switch ($this->getNamePretty()) {
+                case "Any From Firebox":
+                    $desc="Built-in policy to allow outgoing traffic";
+                    break;
+                case "Allow-IKE-to-Firebox":
+                    $desc="Built-in policy to allow incoming IKE";
+                    break;
+                case "WatchGuard":
+                case "WatchGuard Web UI":
+                    $desc="Built-in policy to allow Firebox management";
+                    break;
+                case "Unhandled Internal Packet":
+                case "Unhandled External Packet":
+                    $desc="Built-in policy to deny all pakets - final drop";
+                    break;
+            }
+        }
 
         return $desc;
     }
