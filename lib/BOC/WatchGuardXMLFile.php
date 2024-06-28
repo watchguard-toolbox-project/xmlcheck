@@ -1086,6 +1086,10 @@ class WatchGuardXMLFile
         $v[] = ['setting' => 'VLAN-Forwarding',
                 'value'   => $misc->getVlanForward(),
                 'info'    => '' ];
+        $v[] = ['setting' => 'Auto-Reboot',
+            'value'   => $misc->getAutoReboot(),
+            'info'    => '' ];
+
 
         $v[] = ['setting' => 'SSO-Settings',
                 'value'   => $sso->isEnabled(),
