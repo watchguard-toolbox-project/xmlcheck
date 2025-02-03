@@ -869,6 +869,7 @@ class WatchGuardXMLFile
                     "comment" => $policy->getDescriptionPretty(),
                     "tags" => $policy->getTags(),
                     "action" => $policy->getAction(),
+                    "enabled" => $policy->isEnabled(),
                     "firewall" => $policy->getFirewallAction() ];
             }
             $this->jsonoutput[$index."_count"]['name']=$name;
