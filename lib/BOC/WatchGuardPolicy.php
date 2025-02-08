@@ -76,13 +76,47 @@ class WatchGuardPolicy extends WatchGuardObject
 
         $retval = [];
 
-        $fromaliaslist = $this->obj->children()->{'from-alias-list'};
-        $this->aliasesFrom = $this->getReferencedAliasesFromAliasList($fromaliaslist);
-        $retval = array_merge($retval, $this->aliasesFrom);
+        $retval = array_merge($retval, $this->getReferencedAliasesTo());
+        $retval = array_merge($retval, $this->getReferencedAliasesFrom());
+
+        /*
+        $tmp=  [];
+        # $this->allAliases[$alias->name->__toString()] = new WatchGuardAlias($alias);
+        foreach ($retval as $member) {
+            $tmp[] = array_merge($tmp, $this->allAliases[$member]);
+        }
+        array_merge($retval, $tmp);
+        */
+
+        return $retval;
+    }
+
+    /**
+     * find referenced aliasesTo in policy: look at from:, look at to:
+     * @return array
+     */
+    public function getReferencedAliasesTo() {
+
+        $retval = [];
 
         $toaliaslist = $this->obj->children()->{'to-alias-list'};
         $this->aliasesTo = $this->getReferencedAliasesFromAliasList($toaliaslist);
         $retval = array_merge($retval, $this->aliasesTo);
+
+        return $retval;
+    }
+
+    /**
+     * find referenced aliasesFrom in policy: look at from:, look at to:
+     * @return array
+     */
+    public function getReferencedAliasesFrom() {
+
+        $retval = [];
+
+        $fromaliaslist = $this->obj->children()->{'from-alias-list'};
+        $this->aliasesFrom = $this->getReferencedAliasesFromAliasList($fromaliaslist);
+        $retval = array_merge($retval, $this->aliasesFrom);
 
         return $retval;
     }
@@ -94,6 +128,8 @@ class WatchGuardPolicy extends WatchGuardObject
     public function getReferencedTags() {
 
         $retval = [];
+        // TODO => fromAliasList seems wrong here.
+        // TODO => toAliasList seems wrong here.
 
         print_r($this->obj->children());
         $fromaliaslist = $this->obj->children()->{'from-alias-list'};
@@ -168,6 +204,8 @@ class WatchGuardPolicy extends WatchGuardObject
         $from = $this->aliasesFrom;
         if (is_array($from) && isset($from[0])) {
             if (preg_match("/\.1\.(to|from)/", $from[0])) {
+                // ressolve $from [0]
+                print_r($from[0]);
                 // remove pseudo-alias policy-name.1.to; policy-name.1.from
                 array_shift($from);
             }
@@ -181,6 +219,9 @@ class WatchGuardPolicy extends WatchGuardObject
      */
     public function getService() {
         return $this->obj->service->__toString();
+    }
+    public function getType() {
+        return $this->getService();
     }
 
     /**

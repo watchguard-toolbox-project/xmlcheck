@@ -199,6 +199,13 @@ class WatchGuardXMLFile
 
     }
     /**
+     * returns ONE alias
+     **/
+    private function getAliasByName($name) {
+        return $this->allAliases[$name];
+    }
+
+    /**
      * reads all tunnels from xml and sets the pointer into allTunels array
      **/
     private function getAllTunnels() {
@@ -740,6 +747,8 @@ class WatchGuardXMLFile
     public function prepareAllPolicies($index, $name='') {
         global $options;
 
+        $this->prepareAllAliases('aliases');
+
         if ($name=='') $name=$index;
         $this->output = [];
 
@@ -864,11 +873,34 @@ class WatchGuardXMLFile
 
             $this->jsonoutput[$index]= [];
             foreach ($this->output as $policy) {
+                # print_r($policy);
+
+                $aliasesTo=[];
+                foreach ( $policy->getReferencedAliasesTo() as $alias) {
+                    $aliasesTo[] = $this->getAliasByName($alias);
+                };
+                $aliasesToNames=[];
+                foreach ($aliasesTo as $alias) {
+                    $aliasesToNames = $alias->getReferencedAliases();
+                }
+
+                $aliasesFrom=[];
+                foreach ( $policy->getReferencedAliasesFrom() as $alias) {
+                    $aliasesFrom[] = $this->getAliasByName($alias);
+                }
+                $aliasesFromNames=[];
+                foreach ($aliasesFrom as $alias) {
+                    $aliasesFromNames = $alias->getReferencedAliases();
+                }
+
                 $this->jsonoutput[$index][]= [
                     "name" => $policy->getNamePretty(),
+                    "action" => $policy->getAction(),
+                    "type" => $policy->getType(),
+                    "from" => $aliasesFromNames,
+                    "to" => $aliasesToNames,
                     "comment" => $policy->getDescriptionPretty(),
                     "tags" => $policy->getTags(),
-                    "action" => $policy->getAction(),
                     "enabled" => $policy->isEnabled(),
                     "firewall" => $policy->getFirewallAction() ];
             }

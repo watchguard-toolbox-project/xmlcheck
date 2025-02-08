@@ -45,6 +45,8 @@ if (isset($options["listtags"])) {
 }
 
 if (isset($options["listpolicies"])) {
+    $policyxml->findAliasReferences();
+
     if (isset($filtertag) && is_array($filtertag)) {
         $policyxml->setPolicyTagFilter($filtertag);
     }
