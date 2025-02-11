@@ -872,6 +872,7 @@ class WatchGuardXMLFile
                (isset($options['fwcheck']) && $options['fwcheck']==false)) ) {
 
             $this->jsonoutput[$index]= [];
+            $order=1;
             foreach ($this->output as $policy) {
                 # print_r($policy);
 
@@ -879,21 +880,30 @@ class WatchGuardXMLFile
                 foreach ( $policy->getReferencedAliasesTo() as $alias) {
                     $aliasesTo[] = $this->getAliasByName($alias);
                 };
+
                 $aliasesToNames=[];
                 foreach ($aliasesTo as $alias) {
-                    $aliasesToNames = $alias->getReferencedAliases();
+                    if (preg_match("/(Any|Firebox)/", $alias->getName())) {
+                        $aliasesToNames[] = $alias->getName();
+                    }
+                    else $aliasesToNames = $alias->getReferencedAliases();
                 }
 
                 $aliasesFrom=[];
                 foreach ( $policy->getReferencedAliasesFrom() as $alias) {
                     $aliasesFrom[] = $this->getAliasByName($alias);
                 }
+
                 $aliasesFromNames=[];
                 foreach ($aliasesFrom as $alias) {
-                    $aliasesFromNames = $alias->getReferencedAliases();
+                    if (preg_match("/(Any|Firebox)/", $alias->getName())) {
+                        $aliasesFromNames[] = $alias->getName();
+                    }
+                    else $aliasesFromNames = $alias->getReferencedAliases();
                 }
 
                 $this->jsonoutput[$index][]= [
+                    "order" => $order++,
                     "name" => $policy->getNamePretty(),
                     "action" => $policy->getAction(),
                     "type" => $policy->getType(),
@@ -1069,6 +1079,7 @@ class WatchGuardXMLFile
         $device = new WatchGuardDeviceConf($this->xmlfile);
         $cluster = new WatchGuardCluster($this->xmlfile);
         $version = new WatchGuardXMLVersion($this->xmlfile);
+        $sslvpn = new WatchGuardSSLVPN($this->xmlfile);
 
         // $sso->debug();
 
@@ -1125,8 +1136,19 @@ class WatchGuardXMLFile
 
 
         $v[] = ['setting' => 'SSO-Settings',
-                'value'   => $sso->isEnabled(),
-                'info'    => $sso->getSSOAgents() ];
+            'value'   => $sso->isEnabled(),
+            'info'    => $sso->getSSOAgents() ];
+
+        $v[] = ['setting' => 'SSLVPN-enabled',
+                'value'   => $sslvpn->isEnabled(),
+                'info'    => '' ];
+        $v[] = ['setting' => 'SSLVPN-autoreconnect',
+            'value'   => $sslvpn->isAutoRecoonect(),
+            'info'    => '' ];
+        $v[] = ['setting' => 'SSLVPN-renegDataChannel',
+            'value'   => $sslvpn->renegDataChannel(),
+            'info'    => '' ];
+
 
 
         /*
