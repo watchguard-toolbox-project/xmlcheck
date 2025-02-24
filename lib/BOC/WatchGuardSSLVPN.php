@@ -27,11 +27,19 @@ class WatchGuardSSLVPN extends WatchGuardObject
      */
     public function __construct(SimpleXMLElement $xmlfile)
     {
-        parent::__construct($xmlfile->{'sslvpn-list'}->{'sslvpn'});
+        if (($xmlfile->{'sslvpn-list'} != null) && ($xmlfile->{'sslvpn-list'}->{'sslvpn'} != null)) {
+            parent::__construct($xmlfile->{'sslvpn-list'}->{'sslvpn'});
+        } else {
+            $this->objectType = false;
+        }
     }
 
     public function isEnabled(){
-        return ($this->obj->{'enable'}->__toString());
+        if ($this->obj->{'enable'} != null) {
+            return ($this->obj->{'enable'}->__toString());
+        } else {
+            return ( "0");
+        }
     }
     public function isAutoRecoonect(){
         return ($this->obj->{'auto-reconnect'}->__toString());
