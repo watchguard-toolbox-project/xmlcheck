@@ -36,6 +36,10 @@ class WatchGuardObject
     protected $jsonObject = [];
     protected $objectType;
 
+    protected $XMLObject = true;
+
+    protected $enabled;
+
     protected $default = false;
     /**
      * WatchGuardObject constructor.
@@ -47,6 +51,7 @@ class WatchGuardObject
         $this->referencedBy = [];
         $this->refcount = 0;
         $this->objectType = $type;
+        $this->enabled = true;
 
         if (isset($this->obj->property)) {
             $this->property = $this->obj->property->__toString();
@@ -201,6 +206,22 @@ class WatchGuardObject
     {
         $this->default = $default;
     }
+
+    public function isXMLObject()
+    {
+        return ($this->XMLObject);
+    }
+
+    public function setEnabled(bool $value)
+    {
+        $this->enabled = $value;
+    }
+    public function isEnabled()
+    {
+        return ($this->enabled);
+    }
+
+
 
 }
 
