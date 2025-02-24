@@ -1139,10 +1139,12 @@ class WatchGuardXMLFile
             'value'   => $sso->isEnabled(),
             'info'    => $sso->getSSOAgents() ];
 
-            $v[] = ['setting' => 'SSLVPN-enabled',
-                    'value'   => $sslvpn->isEnabled(),
-                    'info'    => '' ];
-        if ($sslvpn->isEnabled() == "1") {
+
+        $v[] = ['setting' => 'SSLVPN-enabled',
+                'value'   => $sslvpn->isEnabled(),
+                'info'    => '' ];
+
+        if ($sslvpn->isEnabled()) {
             $v[] = ['setting' => 'SSLVPN-autoreconnect',
                 'value'   => $sslvpn->isAutoRecoonect(),
                 'info'    => '' ];
