@@ -55,5 +55,7 @@ class WatchGuardMiscSettings extends WatchGuardObject
     public function getBlockSpoofEnabled(){
         return ($this->obj->{'block-spoof-enabled'}->__toString());
     }
-
+    public function getAutoBlockedDuration(){
+        return ($this->obj->{'auto-blocked-duration'}->__toString());
+    }
 }

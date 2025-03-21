@@ -1133,6 +1133,9 @@ class WatchGuardXMLFile
         $v[] = ['setting' => 'Auto-Reboot',
             'value'   => $misc->getAutoReboot(),
             'info'    => '' ];
+        $v[] = ['setting' => 'AutoBlockDuration',
+            'value'   => $misc->getAutoBlockedDuration(),
+            'info'    => '' ];
 
 
         $v[] = ['setting' => 'SSO-Settings',
@@ -1219,6 +1222,11 @@ class WatchGuardXMLFile
 
         if ($misc->getAutoReboot()==1) {
             printf("%-30s%-49s\n", "Auto-Reboot:", $misc->getAutoReboot());
+            $warnings++;
+        }
+
+        if ($misc->getAutoBlockedDuration()==1200) {
+            printf("%-30s%-49s\n", "Auto-BlockedDuration:", $misc->getAutoBlockedDuration());
             $warnings++;
         }
 
