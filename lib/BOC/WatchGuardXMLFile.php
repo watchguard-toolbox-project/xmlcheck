@@ -1075,6 +1075,7 @@ class WatchGuardXMLFile
 
         $multiwan = new WatchGuardMultiWan($this->xmlfile);
         $sso = new WatchGuardSSO($this->xmlfile);
+        $auth = new WatchGuardAuthSettings($this->xmlfile);
         $sysparm = new WatchGuardSystemParameters($this->xmlfile);
         $misc = new WatchGuardMiscSettings($this->xmlfile);
         $device = new WatchGuardDeviceConf($this->xmlfile);
@@ -1136,6 +1137,19 @@ class WatchGuardXMLFile
             'info'    => $misc->getAutoRebootTime() ];
         $v[] = ['setting' => 'AutoBlockDuration',
             'value'   => $misc->getAutoBlockedDuration(),
+            'info'    => '' ];
+
+        $v[] = ['setting' => 'Fail2Ban',
+            'value'   => $auth->getBruteForceProtectionEnabled(),
+            'info'    => '' ];
+        $v[] = ['setting' => 'Fail2BanFailures',
+            'value'   => $auth->getBruteForceProtectionFailures(),
+            'info'    => '' ];
+        $v[] = ['setting' => 'Fail2BanLockouts',
+            'value'   => $auth->getBruteForceProtectionLockouts(),
+            'info'    => '' ];
+        $v[] = ['setting' => 'Fail2BanDuration',
+            'value'   => $auth->getBruteForceProtectionDuration(),
             'info'    => '' ];
 
 
