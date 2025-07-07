@@ -1133,7 +1133,7 @@ class WatchGuardXMLFile
                 'info'    => '' ];
         $v[] = ['setting' => 'Auto-Reboot',
             'value'   => $misc->getAutoReboot(),
-            'info'    => '' ];
+            'info'    => $misc->getAutoRebootTime() ];
         $v[] = ['setting' => 'AutoBlockDuration',
             'value'   => $misc->getAutoBlockedDuration(),
             'info'    => '' ];
@@ -1225,7 +1225,7 @@ class WatchGuardXMLFile
         }
 
         if ($misc->getMTUProbing()!=2) {
-            printf("%-30s%-49s\n", "Multi-WAN:", $multiwan->MTUProbing());
+            printf("%-30s%-49s\n", "MTU-Probing:", $misc->getMTUProbing());
             $warnings++;
         }
 
