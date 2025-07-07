@@ -1075,6 +1075,7 @@ class WatchGuardXMLFile
 
         $multiwan = new WatchGuardMultiWan($this->xmlfile);
         $sso = new WatchGuardSSO($this->xmlfile);
+        $sysparm = new WatchGuardSystemParameters($this->xmlfile);
         $misc = new WatchGuardMiscSettings($this->xmlfile);
         $device = new WatchGuardDeviceConf($this->xmlfile);
         $cluster = new WatchGuardCluster($this->xmlfile);
@@ -1098,6 +1099,10 @@ class WatchGuardXMLFile
         $v[] = ['setting' => 'ClusterEnabled',
             'value'   => $cluster->isEnabled(),
             'info'    => '' ];
+        $v[] = ['setting' => 'FeatureKeyAutoSync',
+            'value'   => $sysparm->featureKeyAutoSyncIsEnabled(),
+            'info'    => '' ];
+
 
         $v[] = ['setting' => 'Policies',
             'value'   => count($this->allPolicies),
