@@ -53,7 +53,7 @@ class WatchGuardSystemParameters extends WatchGuardObject
     public function isWatchGuardCloudEnabled()
     {
         $return = "0";
-        if ($this->obj->{'daas-client'}->{'enabled'}->__toString() == "1")
+        if (isset($this->obj->{'daas-client'}) && $this->obj->{'daas-client'}->{'enabled'}->__toString() == "1")
         {
             $return = "1";
         }

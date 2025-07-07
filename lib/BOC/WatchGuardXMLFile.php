@@ -1145,8 +1145,8 @@ class WatchGuardXMLFile
         $v[] = ['setting' => 'Fail2BanFailures',
             'value'   => $auth->getBruteForceProtectionFailures(),
             'info'    => '' ];
-        $v[] = ['setting' => 'Fail2BanLockouts',
-            'value'   => $auth->getBruteForceProtectionLockouts(),
+        $v[] = ['setting' => 'Fail2BanPeriod',
+            'value'   => $auth->getBruteForceProtectionPeriod(),
             'info'    => '' ];
         $v[] = ['setting' => 'Fail2BanDuration',
             'value'   => $auth->getBruteForceProtectionDuration(),

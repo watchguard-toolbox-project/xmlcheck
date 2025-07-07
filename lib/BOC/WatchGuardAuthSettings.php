@@ -21,7 +21,7 @@ class WatchGuardAuthSettings extends WatchGuardObject
      */
     protected $bruteForceProtectionEnabled;
     protected $bruteForceProtectionFailures;
-    protected $bruteForceProtectionLockouts;
+    protected $bruteForceProtectionPeriod;
     protected $bruteForceProtectionDuration;
 
     /**
@@ -33,12 +33,13 @@ class WatchGuardAuthSettings extends WatchGuardObject
         parent::__construct($xmlfile->{'system-parameters'}->{'auth-global-setting'});
         $this->bruteForceProtectionEnabled = "0";
         $this->bruteForceProtectionFailures = "0";
-        $this->bruteForceProtectionLockouts = "0";
+        $this->bruteForceProtectionPeriod = "0";
         $this->bruteForceProtectionDuration = "0";
-        if ($this->obj->{'brute-force-protection'}->{'enabled'}->__toString() == "1") {
+        if (isset($this->obj->{'brute-force-protection'}->{'enabled'})
+            && ($this->obj->{'brute-force-protection'}->{'enabled'}->__toString() == "1")) {
             $this->bruteForceProtectionEnabled = "1";
             $this->bruteForceProtectionFailures = $this->obj->{'brute-force-protection'}->{'failures'}->__toString();
-            $this->bruteForceProtectionLockouts = $this->obj->{'brute-force-protection'}->{'lockouts'}->__toString();
+            $this->bruteForceProtectionPeriod = $this->obj->{'brute-force-protection'}->{'period'}->__toString();
             $this->bruteForceProtectionDuration = $this->obj->{'brute-force-protection'}->{'duration'}->__toString();
         };
     }
@@ -53,9 +54,9 @@ class WatchGuardAuthSettings extends WatchGuardObject
         return $this->bruteForceProtectionFailures;
     }
 
-    public function getBruteForceProtectionLockouts(): string
+    public function getBruteForceProtectionPeriod(): string
     {
-        return $this->bruteForceProtectionLockouts;
+        return $this->bruteForceProtectionPeriod;
     }
 
     public function getBruteForceProtectionDuration(): string
