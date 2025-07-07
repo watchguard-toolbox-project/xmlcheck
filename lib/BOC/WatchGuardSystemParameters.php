@@ -27,11 +27,37 @@ class WatchGuardSystemParameters extends WatchGuardObject
      */
     public function __construct(SimpleXMLElement $element)
     {
-        parent::__construct($element);
+        parent::__construct($element->{'system-parameters'});
     }
 
-    public function featureKeyAutoSyncIsEnabled(){
-        return ($this->obj->{'system-parameters'}->{'lsd'}->{'feature-key-auto-sync'}->__toString());
+    /**
+     * Determines if the feature key auto-sync is enabled.
+     *
+     * @return string Returns "1" if the feature key auto-sync is enabled, otherwise "0".
+     */
+    public function featureKeyAutoSyncIsEnabled()
+    {
+        $return = "0";
+        if ($this->obj->{'lsd'}->{'feature-key-auto-sync'}->__toString() == "1")
+        {
+            $return = "1";
+        }
+        return $return;
+    }
+
+    /**
+     * Determines whether the WatchGuard Cloud feature is enabled.
+     *
+     * @return string Returns "1" if the WatchGuard Cloud feature is enabled, otherwise returns "0".
+     */
+    public function isWatchGuardCloudEnabled()
+    {
+        $return = "0";
+        if ($this->obj->{'daas-client'}->{'enabled'}->__toString() == "1")
+        {
+            $return = "1";
+        }
+        return $return;
     }
 
 }

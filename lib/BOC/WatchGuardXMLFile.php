@@ -1099,10 +1099,6 @@ class WatchGuardXMLFile
         $v[] = ['setting' => 'ClusterEnabled',
             'value'   => $cluster->isEnabled(),
             'info'    => '' ];
-        $v[] = ['setting' => 'FeatureKeyAutoSync',
-            'value'   => $sysparm->featureKeyAutoSyncIsEnabled(),
-            'info'    => '' ];
-
 
         $v[] = ['setting' => 'Policies',
             'value'   => count($this->allPolicies),
@@ -1146,6 +1142,14 @@ class WatchGuardXMLFile
         $v[] = ['setting' => 'SSO-Settings',
             'value'   => $sso->isEnabled(),
             'info'    => $sso->getSSOAgents() ];
+
+        $v[] = ['setting' => 'FeatureKeyAutoSync',
+            'value'   => $sysparm->featureKeyAutoSyncIsEnabled(),
+            'info'    => '' ];
+
+        $v[] = ['setting' => 'WatchGuardCloud',
+            'value'   => $sysparm->isWatchGuardCloudEnabled(),
+            'info'    => '' ];
 
 
         $v[] = ['setting' => 'SSLVPN-enabled',
