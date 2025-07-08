@@ -8,7 +8,8 @@
     }
   ],
   "require": {
-    "ext-SimpleXML": "*"
+    "ext-SimpleXML": "*",
+    "phpdocumentor/shim": "*"
   },
   "require-dev": {},
   "autoload": {
@@ -16,6 +17,11 @@
       "BOC\\": [
         "lib/BOC/"
       ]
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "phpdocumentor/shim": true
     }
   }
 }

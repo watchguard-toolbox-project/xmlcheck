@@ -2,5 +2,5 @@
 vendor/
 composer.lock
 *.out
-cache/
+phpdoc.cache/
 scripts/deploy-config.sh
