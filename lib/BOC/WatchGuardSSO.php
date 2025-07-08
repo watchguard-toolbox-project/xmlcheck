@@ -50,7 +50,7 @@ class WatchGuardSSO extends WatchGuardObject
         if ($this->isEnabled()==1) {
             // agent can be array of agent-objects or single agent-object :(
 
-            if (isset($this->obj->{'agent-list'}->{'agent'}{'ip-addr'})) {
+            if (isset($this->obj->{'agent-list'}->{'agent'}->{'ip-addr'})) {
                 // single object ... direct access
                 $tmp .= $this->obj->{'agent-list'}->{'agent'}->{'ip-addr'}->__toString();
             } else {
